@@ -157,7 +157,7 @@ with st.sidebar:
         page = st.radio(
             "Select view:",
             options=[
-                "📈 Monthly Report",
+                "📈 General Analysis",
                 "🔁 Recurring Analysis",
             ],
             label_visibility="collapsed"
@@ -188,8 +188,8 @@ if df_full is None:
 # PAGE 1 — MONTHLY REPORT
 # ══════════════════════════════════════════════════════════════════════════════
 
-if page == "📈 Monthly Report":
-    st.title("📈 KSE Monthly Fundraising Report")
+if page == "📈 General Analysis":
+    st.title("📈 KSE General Report 2023-2026")
 
     available = sorted(df_full["month_key"].unique())
     labels    = [str(m) for m in available]
@@ -567,7 +567,7 @@ if page == "📈 Monthly Report":
 # ══════════════════════════════════════════════════════════════════════════════
 
 elif page == "🔁 Recurring Analysis":
-    st.title("🔁 KSE Recurring Donor Analysis")
+    st.title("🔁 Recurring Donor Analysis 2023-2026")
     st.caption("Full recurring program breakdown: MRR, cohorts, retention, churn, LTV, designations, channels.")
 
     df_all = df_full
