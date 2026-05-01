@@ -274,8 +274,8 @@ if page == "📈 General Analysis":
         curr_keys = set(df_cur["donor_key"])
         ret_pct   = len(prev_keys & curr_keys) / len(prev_keys) * 100 if prev_keys else 0
 
-    t1, t2, t3, t4, t5 = st.tabs([
-        "📈 Revenue", "👥 Donors", "🔁 Recurring", "🎯 Designations", "📡 Channels"
+    t1, t2, t3, t4, t5, t6 = st.tabs([
+        "📈 Revenue", "👥 Donors", "🔁 Recurring", "🎯 Designations", "📡 Channels", "🏆 Top Donations"
     ])
 
     # ── TAB 1 — REVENUE ──────────────────────────────────────────
@@ -428,7 +428,8 @@ if page == "📈 General Analysis":
             color=alt.condition(alt.datum.is_selected, alt.value("#6366f1"), alt.value("#93c5fd")),
             tooltip=["month_str:O", alt.Tooltip("amount:Q", format="$,.0f", title="MRR")]
         ).properties(height=260)
-        st.altair_chart(bar_mrr, use_container_width=True)
+        txt_mrr = bar_mrr.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.0f"))
+        st.altair_chart(bar_mrr + txt_mrr, use_container_width=True)
 
         st.divider()
         st.subheader("New Subscriptions vs. Churn — Trailing 12 Months")
@@ -440,7 +441,8 @@ if page == "📈 General Analysis":
             d_prev_r = set(df_full_f[(df_full_f["month_key"] == mp) & df_full_f["is_recurring"]]["donor_key"])
             new_s    = len(d_cur_r - d_prev_r)
             churn_n  = len(d_prev_r - d_cur_r)
-            churn_rows.append({"month_str": str(m), "New Subscriptions": new_s, "Churned": churn_n})
+            ret_r    = len(d_cur_r & d_prev_r) / len(d_prev_r) * 100 if d_prev_r else 0
+            churn_rows.append({"month_str": str(m), "New Subscriptions": new_s, "Churned": churn_n, "Retention %": ret_r})
         if churn_rows:
             ch_df = pd.DataFrame(churn_rows)
             melt  = ch_df.melt(id_vars="month_str", value_vars=["New Subscriptions","Churned"], var_name="Type", value_name="Count")
@@ -451,6 +453,22 @@ if page == "📈 General Analysis":
                 tooltip=["month_str:O","Type:N","Count:Q"]
             ).properties(height=240)
             st.altair_chart(bar_ch, use_container_width=True)
+
+        st.divider()
+        st.subheader("Recurring Revenue — Year-over-Year by Month")
+        yoy_rec = df_full_f[df_full_f["is_recurring"]].copy()
+        yoy_rec["year"]        = yoy_rec["date"].dt.year.astype(str)
+        yoy_rec["month"]       = yoy_rec["date"].dt.month
+        yoy_rec["month_label"] = yoy_rec["date"].dt.strftime("%b")
+        yoy_pivot = yoy_rec.groupby(["month","month_label","year"])["amount"].sum().reset_index()
+        month_order_rec = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+        yoy_line_rec = alt.Chart(yoy_pivot).mark_line(point=True, strokeWidth=2).encode(
+            x=alt.X("month_label:O", sort=month_order_rec, title="", axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("amount:Q", title="USD", axis=alt.Axis(format="$,.0f")),
+            color=alt.Color("year:N", title="Year", scale=alt.Scale(scheme="tableau10")),
+            tooltip=["year:N","month_label:O", alt.Tooltip("amount:Q", format="$,.0f", title="MRR")]
+        ).properties(height=300)
+        st.altair_chart(yoy_line_rec, use_container_width=True)
 
         st.divider()
         st.subheader("Gift Size Distribution (recurring donors)")
@@ -560,6 +578,54 @@ if page == "📈 General Analysis":
                 ).properties(height=260)
                 st.altair_chart(line_ch, use_container_width=True)
                 st.caption("Top 5 channels shown.")
+
+    # ── TAB 6 — TOP DONATIONS ────────────────────────────────────
+    with t6:
+        st.subheader("Top 10 Donations of All Time")
+        st.caption("Ranked by single transaction amount — from the full dataset (all years, ignoring filters).")
+
+        top10_txns = df_full.nlargest(10, "amount")[
+            ["date", "amount", "donor_name", "designation_label", "platform", "is_recurring"]
+        ].copy()
+
+        top10_txns["date"]         = top10_txns["date"].dt.strftime("%Y-%m-%d")
+        top10_txns["amount_fmt"]   = top10_txns["amount"].apply(fmt)
+        top10_txns["is_recurring"] = top10_txns["is_recurring"].map({True: "✅ Recurring", False: "One-time"})
+
+        rename_txns = {
+            "date": "Date", "amount_fmt": "Amount", "donor_name": "Donor",
+            "designation_label": "Designation", "platform": "Platform", "is_recurring": "Type"
+        }
+        top10_txns = top10_txns.drop(columns=["amount"]).rename(columns=rename_txns)
+        cols_txns  = ["Date", "Amount", "Donor", "Designation", "Platform", "Type"]
+        cols_txns  = [c for c in cols_txns if c in top10_txns.columns]
+        st.dataframe(top10_txns[cols_txns], use_container_width=True, hide_index=True)
+
+        st.divider()
+        st.subheader("Top 10 Donors of All Time (by total given)")
+        st.caption("Sum of all donations per donor — full dataset.")
+
+        top_donors = df_full.groupby("donor_key").agg(
+            total     = ("amount", "sum"),
+            txns      = ("amount", "count"),
+            avg_gift  = ("amount", "mean"),
+            first_txn = ("date",   "min"),
+            last_txn  = ("date",   "max"),
+            name      = ("donor_name", "first"),
+        ).nlargest(10, "total").reset_index()
+
+        top_donors["total"]     = top_donors["total"].apply(fmt)
+        top_donors["avg_gift"]  = top_donors["avg_gift"].apply(fmt)
+        top_donors["first_txn"] = top_donors["first_txn"].dt.strftime("%Y-%m-%d")
+        top_donors["last_txn"]  = top_donors["last_txn"].dt.strftime("%Y-%m-%d")
+
+        st.dataframe(
+            top_donors[["name","total","txns","avg_gift","first_txn","last_txn"]].rename(columns={
+                "name": "Donor", "total": "Total Given", "txns": "Transactions",
+                "avg_gift": "Avg Gift", "first_txn": "First Donation", "last_txn": "Last Donation"
+            }),
+            use_container_width=True, hide_index=True
+        )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
