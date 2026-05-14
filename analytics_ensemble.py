@@ -76,11 +76,11 @@ def load_and_normalise(uploaded_file):
 
     uploaded_file.seek(0)
     try:
-        df = pd.read_csv(uploaded_file, header=header_row) if is_csv \
+        df = pd.read_csv(uploaded_file, header=header_row, on_bad_lines='skip') if is_csv \
              else pd.read_excel(uploaded_file, header=header_row)
     except Exception:
         uploaded_file.seek(0)
-        df = pd.read_csv(uploaded_file) if is_csv else pd.read_excel(uploaded_file)
+        df = pd.read_csv(uploaded_file, on_bad_lines='skip') if is_csv else pd.read_excel(uploaded_file)
 
     df.columns = df.columns.astype(str).str.strip()
     if not {"Donation amount in USD", "Date of donation"}.issubset(df.columns):
