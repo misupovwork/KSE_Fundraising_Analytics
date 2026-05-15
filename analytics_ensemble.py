@@ -45,8 +45,8 @@ def extract_name_from_donation_name(s) -> str:
 
 def donor_key_row(r):
     if r["email"]:          return f"email:{r['email']}"
-    if r["entity_name"]:    return f"entity:{r['entity_name'].lower()}"
     if r["contact_name"]:   return f"contact:{r['contact_name'].lower()}"
+    if r["entity_name"]:    return f"entity:{r['entity_name'].lower()}"
     if r["donation_name"]:  return f"donation:{r['donation_name'].lower()}"
     return "unknown"
 
@@ -193,8 +193,10 @@ if not uploaded:
 # LOAD DATA (cached)
 # ══════════════════════════════════════════════════════════════════
 
+CACHE_VERSION = "v3"  # bump this to bust stale cache after code changes
+
 @st.cache_data(show_spinner="Loading data…")
-def cached_load(data, name):
+def cached_load(data, name, _version=CACHE_VERSION):
     import io
     f = io.BytesIO(data); f.name = name
     return load_and_normalise(f)
