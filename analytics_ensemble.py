@@ -33,16 +33,28 @@ def normalize_text(v) -> str:
 def parse_recurring_flag(series):
     return series.astype(str).str.strip().str.lower().isin({"true","yes","1","y","recurring","✓","x"})
 
+def extract_name_from_donation_name(s) -> str:
+    """Extract donor name from 'Donor Name - $ 12345' style strings."""
+    if pd.isna(s) or not str(s).strip():
+        return ""
+    import re
+    m = re.match(r'^(.+?)\s*-\s*[\$₴€£¥]\s*[\d,\.]+', str(s).strip())
+    if m:
+        return m.group(1).strip()
+    return str(s).strip()
+
 def donor_key_row(r):
-    if r["email"]:        return f"email:{r['email']}"
-    if r["entity_name"]:  return f"entity:{r['entity_name'].lower()}"
-    if r["contact_name"]: return f"contact:{r['contact_name'].lower()}"
+    if r["email"]:          return f"email:{r['email']}"
+    if r["entity_name"]:    return f"entity:{r['entity_name'].lower()}"
+    if r["contact_name"]:   return f"contact:{r['contact_name'].lower()}"
+    if r["donation_name"]:  return f"donation:{r['donation_name'].lower()}"
     return "unknown"
 
 def donor_display_name(r):
-    if r["contact_name"]: return r["contact_name"]
-    if r["entity_name"]:  return r["entity_name"]
-    if r["email"]:        return r["email"]
+    if r["contact_name"]:  return r["contact_name"]
+    if r["entity_name"]:   return r["entity_name"]
+    if r["email"]:         return r["email"]
+    if r["donation_name"]: return r["donation_name"]
     return r["donor_key"]
 
 def fmt(v): return f"${v:,.0f}"
@@ -76,11 +88,11 @@ def load_and_normalise(uploaded_file):
 
     uploaded_file.seek(0)
     try:
-        df = pd.read_csv(uploaded_file, header=header_row, on_bad_lines='skip') if is_csv \
+        df = pd.read_csv(uploaded_file, header=header_row) if is_csv \
              else pd.read_excel(uploaded_file, header=header_row)
     except Exception:
         uploaded_file.seek(0)
-        df = pd.read_csv(uploaded_file, on_bad_lines='skip') if is_csv else pd.read_excel(uploaded_file)
+        df = pd.read_csv(uploaded_file) if is_csv else pd.read_excel(uploaded_file)
 
     df.columns = df.columns.astype(str).str.strip()
     if not {"Donation amount in USD", "Date of donation"}.issubset(df.columns):
@@ -89,8 +101,9 @@ def load_and_normalise(uploaded_file):
     email_col    = next((c for c in ["Email","Email (Donations)"] if c in df.columns), None)
     source_col   = next((c for c in ["SOURCE (Donations)","SOURCE"] if c in df.columns), None)
     platform_col = next((c for c in ["Payment Platform","Platform"] if c in df.columns), None)
-    entity_col   = next((c for c in ["Entity (Donations)","Entity Name"] if c in df.columns), None)
-    contact_col  = next((c for c in ["Full Name","Contact Name","Contact Name Entity Name"] if c in df.columns), None)
+    entity_col   = next((c for c in ["Entity (Donations)","Entity Name","Entity"] if c in df.columns), None)
+    contact_col  = next((c for c in ["Full Name","Contact Name","Contact Name Entity Name","Contact of the donor"] if c in df.columns), None)
+    donation_name_col = next((c for c in ["Donation Name"] if c in df.columns), None)
 
     rmap = {"Donation amount in USD": "amount_raw", "Date of donation": "date"}
     if "Designations"           in df.columns: rmap["Designations"]            = "designation"
@@ -99,6 +112,7 @@ def load_and_normalise(uploaded_file):
     if platform_col:                            rmap[platform_col]              = "platform"
     if entity_col:                              rmap[entity_col]                = "entity_name"
     if contact_col:                             rmap[contact_col]               = "contact_name"
+    if donation_name_col:                       rmap[donation_name_col]         = "donation_name_raw"
     if "Is Recurring Donation"  in df.columns: rmap["Is Recurring Donation"]   = "is_recurring"
     if "Donor status"           in df.columns: rmap["Donor status"]            = "donor_status"
 
@@ -109,6 +123,12 @@ def load_and_normalise(uploaded_file):
     for col in ["email","contact_name","entity_name"]:
         df[col] = df.get(col, pd.Series([""] * len(df))).astype(str).fillna("").map(normalize_text)
     df.loc[df["email"].isin(["nan","none",""]), "email"] = ""
+
+    # Extract donor name from Donation Name as fallback when contact/entity are absent
+    if "donation_name_raw" in df.columns:
+        df["donation_name"] = df["donation_name_raw"].apply(extract_name_from_donation_name)
+    else:
+        df["donation_name"] = ""
     df["designation"] = df.get("designation", pd.Series([""] * len(df))).fillna("").astype(str).str.strip().replace("nan","")
 
     df["donor_key"]  = df.apply(donor_key_row, axis=1)
