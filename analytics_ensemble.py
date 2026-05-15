@@ -394,7 +394,7 @@ if page == "📈 General Analysis":
 
         if ret_pct is not None:
             st.divider()
-            st.subheader("Overall Retention vs Last Month")
+            st.subheader("This month vs Last Month")
             prev_keys = set(df_prev["donor_key"])
             curr_keys = set(df_cur["donor_key"])
             retained  = len(prev_keys & curr_keys)
