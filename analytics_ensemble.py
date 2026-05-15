@@ -273,8 +273,6 @@ if page == "📈 General Analysis":
     if df_cur.empty:
         st.warning("No donations found for the selected month and filters."); st.stop()
 
-    st.caption(f"🗓 **{sel_label}** — {len(df_cur):,} transactions  |  prev month: {prev_period}")
-
     def month_metrics(df):
         return dict(
             revenue   = df["amount"].sum(),
