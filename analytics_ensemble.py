@@ -211,7 +211,7 @@ if df_full is None:
 # ══════════════════════════════════════════════════════════════════════════════
 
 if page == "📈 General Analysis":
-    st.title("📈 KSE General Report 2023-2026")
+    st.title("📈 KSE Monthly Analytics")
 
     available = sorted(df_full["month_key"].unique())
     labels    = [str(m) for m in available]
@@ -394,7 +394,7 @@ if page == "📈 General Analysis":
 
         if ret_pct is not None:
             st.divider()
-            st.subheader("This month vs Last Month")
+            st.subheader("This month vs Last month")
             prev_keys = set(df_prev["donor_key"])
             curr_keys = set(df_cur["donor_key"])
             retained  = len(prev_keys & curr_keys)
