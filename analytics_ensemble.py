@@ -156,36 +156,234 @@ def load_and_normalise(uploaded_file):
 
 
 # ══════════════════════════════════════════════════════════════════
-# SIDEBAR — FILE UPLOAD & NAVIGATION
+# SIDEBAR — NAVIGATION (shown only after upload)
 # ══════════════════════════════════════════════════════════════════
 
+page = "📈 General Analysis"
+
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/KSE_logo.svg/320px-KSE_logo.svg.png",
-             width=120, use_column_width=False) if False else None  # placeholder; remove if no logo
     st.title("KSE Analytics")
     st.divider()
 
-    st.header("📂 Upload data")
     uploaded = st.file_uploader(
-        "Full KSE export 2023–2026 (csv / xlsx)",
-        type=["csv","xlsx"]
+        "Upload export (CSV / XLSX)",
+        type=["csv", "xlsx"],
+        label_visibility="collapsed",
     )
 
     if uploaded:
         st.divider()
-        st.header("🗺️ Navigation")
+        st.header("Navigate")
         page = st.radio(
             "Select view:",
             options=[
                 "📈 General Analysis",
                 "🔁 Recurring Analysis",
             ],
-            label_visibility="collapsed"
+            label_visibility="collapsed",
         )
 
+
+# ══════════════════════════════════════════════════════════════════
+# HOME PAGE — shown when no file is uploaded
+# ══════════════════════════════════════════════════════════════════
+
 if not uploaded:
-    st.title("📊 KSE Donation Analytics")
-    st.info("👈 Upload your full donations export in the sidebar to get started.")
+    st.markdown("""
+<style>
+/* ── page shell ── */
+.home-wrap { max-width: 640px; margin: 0 auto; padding: 3rem 0 4rem; font-family: sans-serif; }
+
+/* ── header ── */
+.home-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
+}
+.home-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #0d1117;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+.home-subtitle {
+    font-size: 15px;
+    color: #555;
+    margin: 0 0 2.5rem 0;
+    line-height: 1.6;
+}
+
+/* ── upload zone ── */
+.upload-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+}
+.upload-hint {
+    font-size: 12px;
+    color: #999;
+    margin-top: 0.75rem;
+    margin-bottom: 2.5rem;
+}
+
+/* ── divider ── */
+.home-divider {
+    border: none;
+    border-top: 1px solid #e8e8e8;
+    margin: 0 0 1.5rem 0;
+}
+
+/* ── section label ── */
+.views-label {
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 1rem;
+}
+
+/* ── view rows ── */
+.view-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.view-row:last-child { border-bottom: none; }
+
+.view-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+.view-icon-blue  { background: #EBF4FF; }
+.view-icon-green { background: #E6F6EF; }
+
+.view-body { flex: 1; }
+.view-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0d1117;
+    margin: 0 0 3px 0;
+}
+.view-desc {
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 6px 0;
+    line-height: 1.5;
+}
+.view-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid #e4e4e4;
+    color: #777;
+    background: #fafafa;
+}
+
+/* dark mode overrides */
+@media (prefers-color-scheme: dark) {
+    .home-title   { color: #f0f6fc; }
+    .home-subtitle, .view-desc { color: #8b949e; }
+    .home-eyebrow, .views-label { color: #484f58; }
+    .upload-hint  { color: #484f58; }
+    .upload-label, .tag { color: #8b949e; }
+    .home-divider { border-color: #21262d; }
+    .view-row     { border-bottom-color: #161b22; }
+    .view-title   { color: #f0f6fc; }
+    .view-icon-blue  { background: #0d2137; }
+    .view-icon-green { background: #0d2118; }
+    .tag { background: #161b22; border-color: #21262d; }
+}
+</style>
+
+<div class="home-wrap">
+  <p class="home-eyebrow">KSE Foundation</p>
+  <h1 class="home-title">Donation Analytics</h1>
+  <p class="home-subtitle">
+    Upload a Zoho CRM export to explore revenue trends, recurring donor health,
+    cohort retention, and more.
+  </p>
+</div>
+""", unsafe_allow_html=True)
+
+    # Streamlit's native file uploader — rendered below the HTML header
+    st.markdown('<p class="upload-label">Export file</p>', unsafe_allow_html=True)
+
+    home_upload = st.file_uploader(
+        "Drop your CSV or XLSX export here",
+        type=["csv", "xlsx"],
+        key="home_uploader",
+        label_visibility="visible",
+    )
+
+    st.markdown(
+        '<p class="upload-hint">Accepted: Zoho CRM CSV or Excel export · 2023–2026</p>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("""
+<div class="home-wrap" style="padding-top: 0;">
+  <hr class="home-divider">
+  <p class="views-label">Available analytics</p>
+
+  <div class="view-row">
+    <div class="view-icon-wrap view-icon-blue">📈</div>
+    <div class="view-body">
+      <p class="view-title">General analysis</p>
+      <p class="view-desc">Month-by-month revenue, donor acquisition, platform mix, gift size distribution, top donations, and year-over-year comparisons.</p>
+      <div class="view-tags">
+        <span class="tag">Revenue</span>
+        <span class="tag">Donors</span>
+        <span class="tag">Channels</span>
+        <span class="tag">Designations</span>
+        <span class="tag">Top donations</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="view-row">
+    <div class="view-icon-wrap view-icon-green">🔁</div>
+    <div class="view-body">
+      <p class="view-title">Recurring analysis</p>
+      <p class="view-desc">Full recurring program breakdown — MRR growth, retention and churn rates, cohort table, LTV estimates, gift size distribution, and top donors by cohort.</p>
+      <div class="view-tags">
+        <span class="tag">MRR</span>
+        <span class="tag">Retention</span>
+        <span class="tag">Cohorts</span>
+        <span class="tag">Churn</span>
+        <span class="tag">LTV</span>
+        <span class="tag">Gift size</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+""", unsafe_allow_html=True)
+
+    st.stop()
+
+
+# ── pick up a file submitted from the home uploader ──────────────
+if uploaded is None:
+    home_upload = st.session_state.get("home_uploader")
+    if home_upload is not None:
+        uploaded = home_upload
+if uploaded is None:
     st.stop()
 
 
