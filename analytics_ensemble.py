@@ -118,7 +118,7 @@ def load_and_normalise(uploaded_file):
 
     df = df.rename(columns=rmap)
     df["date"] = pd.to_datetime(df["date"], dayfirst=True, errors="coerce")
-    df = df.dropna(subset=["date"])
+    df = df.dropna(subset=["date"]).reset_index(drop=True)
 
     for col in ["email","contact_name","entity_name"]:
         df[col] = df.get(col, pd.Series([""] * len(df))).astype(str).fillna("").map(normalize_text)
@@ -156,22 +156,15 @@ def load_and_normalise(uploaded_file):
 
 
 # ══════════════════════════════════════════════════════════════════
-# SIDEBAR — NAVIGATION (shown only after upload)
+# SIDEBAR — adaptive: navigation when loaded, caption when not
 # ══════════════════════════════════════════════════════════════════
 
 page = "📈 General Analysis"
 
 with st.sidebar:
     st.title("KSE Analytics")
-    st.divider()
 
-    uploaded = st.file_uploader(
-        "Upload export (CSV / XLSX)",
-        type=["csv", "xlsx"],
-        label_visibility="collapsed",
-    )
-
-    if uploaded:
+    if "file_data" in st.session_state:
         st.divider()
         st.header("Navigate")
         page = st.radio(
@@ -182,19 +175,28 @@ with st.sidebar:
             ],
             label_visibility="collapsed",
         )
+        st.divider()
+        if st.button("↩ Change file", use_container_width=True):
+            st.session_state.pop("file_data", None)
+            st.session_state.pop("file_name", None)
+            st.rerun()
+    else:
+        st.caption("Upload your export to begin.")
 
 
 # ══════════════════════════════════════════════════════════════════
-# HOME PAGE — shown when no file is uploaded
+# HOME PAGE — shown until a file is stored in session state
 # ══════════════════════════════════════════════════════════════════
 
-if not uploaded:
+if "file_data" not in st.session_state:
     st.markdown("""
 <style>
-/* ── page shell ── */
-.home-wrap { max-width: 640px; margin: 0 auto; padding: 3rem 0 4rem; font-family: sans-serif; }
-
-/* ── header ── */
+.home-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 3rem 0 1.5rem;
+    font-family: sans-serif;
+}
 .home-eyebrow {
     font-size: 11px;
     letter-spacing: 0.08em;
@@ -212,44 +214,48 @@ if not uploaded:
 .home-subtitle {
     font-size: 15px;
     color: #555;
-    margin: 0 0 2.5rem 0;
+    margin: 0 0 1.75rem 0;
     line-height: 1.6;
 }
-
-/* ── upload zone ── */
-.upload-label {
-    font-size: 12px;
+.upload-section-label {
+    font-size: 11px;
     font-weight: 500;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.35rem;
-}
-.upload-hint {
-    font-size: 12px;
     color: #999;
-    margin-top: 0.75rem;
-    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0 0 0.4rem 0;
 }
 
-/* ── divider ── */
+/* center the native Streamlit file uploader widget */
+[data-testid="stFileUploader"] {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.upload-hint {
+    max-width: 640px;
+    margin: 0.5rem auto 2rem;
+    font-size: 12px;
+    color: #bbb;
+    text-align: center;
+}
 .home-divider {
+    max-width: 640px;
+    margin: 0 auto 1.5rem;
     border: none;
     border-top: 1px solid #e8e8e8;
-    margin: 0 0 1.5rem 0;
 }
-
-/* ── section label ── */
 .views-label {
+    max-width: 640px;
+    margin: 0 auto 1rem;
     font-size: 11px;
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: #aaa;
-    margin-bottom: 1rem;
 }
-
-/* ── view rows ── */
 .view-row {
+    max-width: 640px;
+    margin: 0 auto;
     display: flex;
     align-items: flex-start;
     gap: 14px;
@@ -257,7 +263,6 @@ if not uploaded:
     border-bottom: 1px solid #f0f0f0;
 }
 .view-row:last-child { border-bottom: none; }
-
 .view-icon-wrap {
     width: 36px;
     height: 36px;
@@ -271,7 +276,6 @@ if not uploaded:
 }
 .view-icon-blue  { background: #EBF4FF; }
 .view-icon-green { background: #E6F6EF; }
-
 .view-body { flex: 1; }
 .view-title {
     font-size: 15px;
@@ -286,7 +290,7 @@ if not uploaded:
     line-height: 1.5;
 }
 .view-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-.tag {
+.view-tag {
     font-size: 11px;
     padding: 2px 8px;
     border-radius: 20px;
@@ -295,19 +299,17 @@ if not uploaded:
     background: #fafafa;
 }
 
-/* dark mode overrides */
 @media (prefers-color-scheme: dark) {
-    .home-title   { color: #f0f6fc; }
-    .home-subtitle, .view-desc { color: #8b949e; }
-    .home-eyebrow, .views-label { color: #484f58; }
-    .upload-hint  { color: #484f58; }
-    .upload-label, .tag { color: #8b949e; }
-    .home-divider { border-color: #21262d; }
-    .view-row     { border-bottom-color: #161b22; }
-    .view-title   { color: #f0f6fc; }
-    .view-icon-blue  { background: #0d2137; }
-    .view-icon-green { background: #0d2118; }
-    .tag { background: #161b22; border-color: #21262d; }
+    .home-title                  { color: #f0f6fc; }
+    .home-subtitle, .view-desc   { color: #8b949e; }
+    .home-eyebrow, .views-label  { color: #484f58; }
+    .upload-section-label, .upload-hint { color: #484f58; }
+    .home-divider                { border-color: #21262d; }
+    .view-row                    { border-bottom-color: #161b22; }
+    .view-title                  { color: #f0f6fc; }
+    .view-icon-blue              { background: #0d2137; }
+    .view-icon-green             { background: #0d2118; }
+    .view-tag { background: #161b22; border-color: #21262d; color: #8b949e; }
 }
 </style>
 
@@ -315,93 +317,97 @@ if not uploaded:
   <p class="home-eyebrow">KSE Foundation</p>
   <h1 class="home-title">Donation Analytics</h1>
   <p class="home-subtitle">
-    Upload a Zoho CRM export to explore revenue trends, recurring donor health,
-    cohort retention, and more.
+    Upload a Zoho CRM export to explore revenue trends,
+    recurring donor health, cohort retention, and more.
   </p>
+  <p class="upload-section-label">Export file</p>
 </div>
 """, unsafe_allow_html=True)
 
-    # Streamlit's native file uploader — rendered below the HTML header
-    st.markdown('<p class="upload-label">Export file</p>', unsafe_allow_html=True)
-
-    home_upload = st.file_uploader(
-        "Drop your CSV or XLSX export here",
-        type=["csv", "xlsx"],
-        key="home_uploader",
-        label_visibility="visible",
-    )
-
-    st.markdown(
-        '<p class="upload-hint">Accepted: Zoho CRM CSV or Excel export · 2023–2026</p>',
-        unsafe_allow_html=True,
-    )
+    # st.columns is the only reliable way to constrain a native Streamlit
+    # widget to ~640 px on layout="wide".
+    _, _col, _ = st.columns([1, 2, 1])
+    with _col:
+        _home_upload = st.file_uploader(
+            "Drop your CSV or XLSX export here",
+            type=["csv", "xlsx"],
+            key="home_uploader",
+            label_visibility="collapsed",
+        )
 
     st.markdown("""
-<div class="home-wrap" style="padding-top: 0;">
-  <hr class="home-divider">
-  <p class="views-label">Available analytics</p>
+<p class="upload-hint">Zoho CRM CSV or Excel export · 2023–2026</p>
+<hr class="home-divider">
+<p class="views-label">Available analytics</p>
 
-  <div class="view-row">
-    <div class="view-icon-wrap view-icon-blue">📈</div>
-    <div class="view-body">
-      <p class="view-title">General analysis</p>
-      <p class="view-desc">Month-by-month revenue, donor acquisition, platform mix, gift size distribution, top donations, and year-over-year comparisons.</p>
-      <div class="view-tags">
-        <span class="tag">Revenue</span>
-        <span class="tag">Donors</span>
-        <span class="tag">Channels</span>
-        <span class="tag">Designations</span>
-        <span class="tag">Top donations</span>
-      </div>
+<div class="view-row">
+  <div class="view-icon-wrap view-icon-blue">📈</div>
+  <div class="view-body">
+    <p class="view-title">General analysis</p>
+    <p class="view-desc">Month-by-month revenue, donor acquisition, platform mix,
+    gift size distribution, top donations, and year-over-year comparisons.</p>
+    <div class="view-tags">
+      <span class="view-tag">Revenue</span>
+      <span class="view-tag">Donors</span>
+      <span class="view-tag">Channels</span>
+      <span class="view-tag">Designations</span>
+      <span class="view-tag">Top donations</span>
     </div>
   </div>
+</div>
 
-  <div class="view-row">
-    <div class="view-icon-wrap view-icon-green">🔁</div>
-    <div class="view-body">
-      <p class="view-title">Recurring analysis</p>
-      <p class="view-desc">Full recurring program breakdown — MRR growth, retention and churn rates, cohort table, LTV estimates, gift size distribution, and top donors by cohort.</p>
-      <div class="view-tags">
-        <span class="tag">MRR</span>
-        <span class="tag">Retention</span>
-        <span class="tag">Cohorts</span>
-        <span class="tag">Churn</span>
-        <span class="tag">LTV</span>
-        <span class="tag">Gift size</span>
-      </div>
+<div class="view-row">
+  <div class="view-icon-wrap view-icon-green">🔁</div>
+  <div class="view-body">
+    <p class="view-title">Recurring analysis</p>
+    <p class="view-desc">Full recurring program — MRR growth, retention and churn
+    rates, cohort table, LTV estimates, gift size distribution, and top donors
+    by cohort.</p>
+    <div class="view-tags">
+      <span class="view-tag">MRR</span>
+      <span class="view-tag">Retention</span>
+      <span class="view-tag">Cohorts</span>
+      <span class="view-tag">Churn</span>
+      <span class="view-tag">LTV</span>
+      <span class="view-tag">Gift size</span>
     </div>
   </div>
-
 </div>
 """, unsafe_allow_html=True)
 
-    st.stop()
+    # Persist bytes and rerun cleanly so the analytics page renders on its
+    # own — not stacked beneath the still-visible home page HTML.
+    if _home_upload is not None:
+        st.session_state["file_data"] = _home_upload.read()
+        st.session_state["file_name"] = _home_upload.name
+        st.rerun()
 
-
-# ── pick up a file submitted from the home uploader ──────────────
-if uploaded is None:
-    home_upload = st.session_state.get("home_uploader")
-    if home_upload is not None:
-        uploaded = home_upload
-if uploaded is None:
     st.stop()
 
 
 # ══════════════════════════════════════════════════════════════════
-# LOAD DATA (cached)
+# LOAD DATA (cached) — reads from session state, not a widget
 # ══════════════════════════════════════════════════════════════════
 
-CACHE_VERSION = "v3"  # bump this to bust stale cache after code changes
+CACHE_VERSION = "v3"
 
 @st.cache_data(show_spinner="Loading data…")
-def cached_load(data, name, _version=CACHE_VERSION):
+def cached_load(data: bytes, name: str, _version: str = CACHE_VERSION):
     import io
-    f = io.BytesIO(data); f.name = name
+    f = io.BytesIO(data)
+    f.name = name
     return load_and_normalise(f)
 
-df_full, msg = cached_load(uploaded.read(), uploaded.name)
+df_full, msg = cached_load(
+    st.session_state["file_data"],
+    st.session_state["file_name"],
+)
 if df_full is None:
-    st.error(msg); st.stop()
+    st.error(msg)
+    # Clear bad file so the user can try a different upload
+    st.session_state.pop("file_data", None)
+    st.session_state.pop("file_name", None)
+    st.stop()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
