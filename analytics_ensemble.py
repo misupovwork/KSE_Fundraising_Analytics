@@ -1,5 +1,5 @@
 # To run:
-#   python -m streamlit run kse_analytics.py
+#   python -m streamlit run main.py
 
 import streamlit as st
 import pandas as pd
@@ -7,8 +7,404 @@ import re
 import altair as alt
 import numpy as np
 from datetime import date
+from html import escape
 
 st.set_page_config(page_title="KSE Donation Analytics", page_icon="📊", layout="wide")
+
+
+def install_theme():
+    """Central visual system for the Streamlit shell."""
+    st.markdown(
+        """
+<style>
+:root {
+    --bg: #f6f7f2;
+    --panel: #ffffff;
+    --panel-soft: #fbfbf7;
+    --ink: #18211f;
+    --muted: #65716d;
+    --line: #dfe5dd;
+    --green: #1f7a5f;
+    --green-soft: #e6f3ed;
+    --blue: #315a9d;
+    --blue-soft: #e8eef9;
+    --gold: #a96f1f;
+    --rose: #a43d56;
+}
+
+.stApp {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+[data-testid="stAppViewContainer"] > .main .block-container {
+    max-width: 1320px;
+    padding: 1.35rem 2.25rem 3rem;
+}
+
+[data-testid="stHeader"] {
+    background: rgba(246, 247, 242, 0.86);
+    backdrop-filter: blur(12px);
+}
+
+[data-testid="stSidebar"] {
+    background: #ffffff;
+    border-right: 1px solid var(--line);
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span {
+    color: var(--muted);
+}
+
+.brand-block {
+    border-bottom: 1px solid var(--line);
+    padding: 0.35rem 0 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.brand-kicker,
+.home-kicker,
+.page-kicker,
+.section-kicker {
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 0.35rem;
+}
+
+.brand-title {
+    color: var(--ink);
+    font-size: 1.35rem;
+    font-weight: 850;
+    line-height: 1.05;
+    margin: 0;
+}
+
+.brand-subtitle {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    margin: 0.45rem 0 0;
+}
+
+.page-hero,
+.data-strip,
+.home-hero,
+.home-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 18px 45px rgba(38, 48, 43, 0.07);
+}
+
+.page-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.35rem 1.45rem;
+    margin: 0 0 1rem;
+}
+
+.page-title {
+    color: var(--ink);
+    font-size: clamp(1.75rem, 3vw, 2.55rem);
+    font-weight: 850;
+    letter-spacing: 0;
+    line-height: 1.05;
+    margin: 0;
+}
+
+.page-copy {
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    max-width: 760px;
+    margin: 0.55rem 0 0;
+}
+
+.hero-pills,
+.data-strip,
+.home-stats,
+.view-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.hero-pill,
+.data-pill,
+.view-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel-soft);
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 750;
+    padding: 0.28rem 0.72rem;
+    white-space: nowrap;
+}
+
+.data-strip {
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    margin: 0 0 1rem;
+    box-shadow: none;
+}
+
+.data-pill strong {
+    color: var(--ink);
+    margin-left: 0.35rem;
+}
+
+.home-hero {
+    padding: clamp(1.4rem, 4vw, 2.2rem);
+    margin: 0 auto 1rem;
+}
+
+.home-title {
+    color: var(--ink);
+    font-size: clamp(2.05rem, 5vw, 4rem);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 0.98;
+    max-width: 900px;
+    margin: 0;
+}
+
+.home-copy {
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+    max-width: 720px;
+    margin: 1rem 0 0;
+}
+
+.home-stats {
+    margin-top: 1.3rem;
+}
+
+.home-stat {
+    border-left: 3px solid var(--green);
+    background: var(--panel-soft);
+    border-radius: 8px;
+    padding: 0.72rem 0.9rem;
+    min-width: 160px;
+}
+
+.home-stat strong {
+    color: var(--ink);
+    display: block;
+    font-size: 1.05rem;
+}
+
+.home-stat span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.home-panel {
+    padding: 1rem;
+    height: 100%;
+    box-shadow: none;
+}
+
+.view-row {
+    display: flex;
+    gap: 0.9rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.view-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.view-icon {
+    align-items: center;
+    background: var(--green-soft);
+    border-radius: 8px;
+    color: var(--green);
+    display: flex;
+    flex: 0 0 38px;
+    font-size: 1.1rem;
+    height: 38px;
+    justify-content: center;
+}
+
+.view-icon.blue {
+    background: var(--blue-soft);
+    color: var(--blue);
+}
+
+.view-title {
+    color: var(--ink);
+    font-size: 0.98rem;
+    font-weight: 820;
+    margin: 0 0 0.24rem;
+}
+
+.view-desc {
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin: 0 0 0.45rem;
+}
+
+div[data-testid="stMetric"] {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.95rem 1rem;
+    box-shadow: 0 12px 28px rgba(38, 48, 43, 0.055);
+}
+
+div[data-testid="stMetric"] label {
+    color: var(--muted) !important;
+    font-size: 0.74rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+div[data-testid="stMetricValue"] {
+    color: var(--ink);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 850;
+}
+
+[data-testid="stFileUploader"] section {
+    background: var(--panel);
+    border: 1.5px dashed #9eb7ad;
+    border-radius: 8px;
+    min-height: 150px;
+}
+
+[data-testid="stFileUploader"] section:hover {
+    border-color: var(--green);
+    background: #f7fbf8;
+}
+
+.stButton > button,
+[data-testid="stBaseButton-secondary"] {
+    border-radius: 8px !important;
+    border: 1px solid var(--line) !important;
+    font-weight: 760 !important;
+}
+
+.stButton > button:hover {
+    border-color: var(--green) !important;
+    color: var(--green) !important;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.35rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.stTabs [data-baseweb="tab"] {
+    border-radius: 8px 8px 0 0;
+    color: var(--muted);
+    font-weight: 760;
+    padding: 0.55rem 0.9rem;
+}
+
+.stTabs [aria-selected="true"] {
+    background: #ffffff;
+    color: var(--green) !important;
+    border: 1px solid var(--line);
+    border-bottom-color: #ffffff;
+}
+
+hr {
+    margin: 1.15rem 0;
+    border-color: var(--line);
+}
+
+h2, h3 {
+    color: var(--ink);
+    letter-spacing: 0;
+}
+
+h3 {
+    font-size: 1.14rem !important;
+    margin-top: 0.4rem !important;
+}
+
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+[data-testid="stAlert"] {
+    border-radius: 8px;
+}
+
+@media (max-width: 760px) {
+    [data-testid="stAppViewContainer"] > .main .block-container {
+        padding: 1rem 0.8rem 2rem;
+    }
+
+    .page-hero,
+    .data-strip {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+</style>
+""",
+        unsafe_allow_html=True,
+    )
+
+
+def render_page_header(kicker, title, copy, pills=None):
+    pills = pills or []
+    pill_html = "".join(f'<span class="hero-pill">{escape(str(p))}</span>' for p in pills)
+    st.markdown(
+        f"""
+<section class="page-hero">
+  <div>
+    <p class="page-kicker">{escape(kicker)}</p>
+    <h1 class="page-title">{escape(title)}</h1>
+    <p class="page-copy">{escape(copy)}</p>
+  </div>
+  <div class="hero-pills">{pill_html}</div>
+</section>
+""",
+        unsafe_allow_html=True,
+    )
+
+
+def render_data_strip(df, file_name):
+    date_min = df["date"].min().strftime("%Y-%m-%d")
+    date_max = df["date"].max().strftime("%Y-%m-%d")
+    st.markdown(
+        f"""
+<div class="data-strip">
+  <span class="data-pill">File <strong>{escape(file_name)}</strong></span>
+  <span class="data-pill">Period <strong>{date_min} to {date_max}</strong></span>
+  <span class="data-pill">Revenue <strong>{fmt(df["amount"].sum())}</strong></span>
+  <span class="data-pill">Donors <strong>{df["donor_key"].nunique():,}</strong></span>
+  <span class="data-pill">Transactions <strong>{len(df):,}</strong></span>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
+
+
+install_theme()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -162,11 +558,19 @@ def load_and_normalise(uploaded_file):
 page = "📈 General Analysis"
 
 with st.sidebar:
-    st.title("KSE Analytics")
+    st.markdown(
+        """
+<div class="brand-block">
+  <p class="brand-kicker">KSE Foundation</p>
+  <p class="brand-title">Donation Analytics</p>
+  <p class="brand-subtitle">Fundraising performance, donor behavior, and recurring revenue health.</p>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
 
     if "file_data" in st.session_state:
-        st.divider()
-        st.header("Navigate")
+        st.markdown('<p class="section-kicker">Workspace</p>', unsafe_allow_html=True)
         page = st.radio(
             "Select view:",
             options=[
@@ -176,12 +580,12 @@ with st.sidebar:
             label_visibility="collapsed",
         )
         st.divider()
-        if st.button("↩ Change file", use_container_width=True):
+        if st.button("Change file", use_container_width=True):
             st.session_state.pop("file_data", None)
             st.session_state.pop("file_name", None)
             st.rerun()
     else:
-        st.caption("Upload your export to begin.")
+        st.caption("Upload a Zoho CRM export to begin.")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -190,186 +594,69 @@ with st.sidebar:
 
 if "file_data" not in st.session_state:
     st.markdown("""
-<style>
-.home-wrap {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 3rem 0 1.5rem;
-    font-family: sans-serif;
-}
-.home-eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #888;
-    margin-bottom: 6px;
-}
-.home-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: #0d1117;
-    margin: 0 0 8px 0;
-    line-height: 1.2;
-}
-.home-subtitle {
-    font-size: 15px;
-    color: #555;
-    margin: 0 0 1.75rem 0;
-    line-height: 1.6;
-}
-.upload-section-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin: 0 0 0.4rem 0;
-}
-
-/* center the native Streamlit file uploader widget */
-[data-testid="stFileUploader"] {
-    max-width: 640px;
-    margin: 0 auto;
-}
-
-.upload-hint {
-    max-width: 640px;
-    margin: 0.5rem auto 2rem;
-    font-size: 12px;
-    color: #bbb;
-    text-align: center;
-}
-.home-divider {
-    max-width: 640px;
-    margin: 0 auto 1.5rem;
-    border: none;
-    border-top: 1px solid #e8e8e8;
-}
-.views-label {
-    max-width: 640px;
-    margin: 0 auto 1rem;
-    font-size: 11px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: #aaa;
-}
-.view-row {
-    max-width: 640px;
-    margin: 0 auto;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 1rem 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-.view-row:last-child { border-bottom: none; }
-.view-icon-wrap {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-    margin-top: 1px;
-}
-.view-icon-blue  { background: #EBF4FF; }
-.view-icon-green { background: #E6F6EF; }
-.view-body { flex: 1; }
-.view-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #0d1117;
-    margin: 0 0 3px 0;
-}
-.view-desc {
-    font-size: 13px;
-    color: #666;
-    margin: 0 0 6px 0;
-    line-height: 1.5;
-}
-.view-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-.view-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid #e4e4e4;
-    color: #777;
-    background: #fafafa;
-}
-
-@media (prefers-color-scheme: dark) {
-    .home-title                  { color: #f0f6fc; }
-    .home-subtitle, .view-desc   { color: #8b949e; }
-    .home-eyebrow, .views-label  { color: #484f58; }
-    .upload-section-label, .upload-hint { color: #484f58; }
-    .home-divider                { border-color: #21262d; }
-    .view-row                    { border-bottom-color: #161b22; }
-    .view-title                  { color: #f0f6fc; }
-    .view-icon-blue              { background: #0d2137; }
-    .view-icon-green             { background: #0d2118; }
-    .view-tag { background: #161b22; border-color: #21262d; color: #8b949e; }
-}
-</style>
-
-<div class="home-wrap">
-  <p class="home-eyebrow">KSE Foundation</p>
-  <h1 class="home-title">Donation Analytics</h1>
-  <p class="home-subtitle">
-    Upload a Zoho CRM export to explore revenue trends,
-    recurring donor health, cohort retention, and more.
+<section class="home-hero">
+  <p class="home-kicker">KSE Foundation analytics workspace</p>
+  <h1 class="home-title">Donation intelligence without the spreadsheet fog.</h1>
+  <p class="home-copy">
+    Upload a Zoho CRM export and move straight into monthly fundraising performance,
+    donor acquisition, recurring revenue, cohort retention, channels, designations,
+    and top donor analysis.
   </p>
-  <p class="upload-section-label">Export file</p>
-</div>
+  <div class="home-stats">
+    <div class="home-stat"><strong>CSV or XLSX</strong><span>Zoho CRM exports</span></div>
+    <div class="home-stat"><strong>Two views</strong><span>General and recurring</span></div>
+    <div class="home-stat"><strong>Private session</strong><span>Stored only while open</span></div>
+  </div>
+</section>
 """, unsafe_allow_html=True)
 
-    # st.columns is the only reliable way to constrain a native Streamlit
-    # widget to ~640 px on layout="wide".
-    _, _col, _ = st.columns([1, 2, 1])
-    with _col:
+    upload_col, preview_col = st.columns([1.05, 1], gap="large")
+    with upload_col:
+        st.markdown(
+            """
+<div class="home-panel">
+  <p class="section-kicker">Start here</p>
+  <p class="view-title">Upload export</p>
+  <p class="view-desc">Use the current Zoho CRM donation export. Required columns are donation amount and donation date.</p>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
         _home_upload = st.file_uploader(
             "Drop your CSV or XLSX export here",
             type=["csv", "xlsx"],
             key="home_uploader",
-            label_visibility="collapsed",
+            label_visibility="visible",
         )
 
-    st.markdown("""
-<p class="upload-hint">Zoho CRM CSV or Excel export · 2023–2026</p>
-<hr class="home-divider">
-<p class="views-label">Available analytics</p>
-
-<div class="view-row">
-  <div class="view-icon-wrap view-icon-blue">📈</div>
-  <div class="view-body">
-    <p class="view-title">General analysis</p>
-    <p class="view-desc">Month-by-month revenue, donor acquisition, platform mix,
-    gift size distribution, top donations, and year-over-year comparisons.</p>
-    <div class="view-tags">
-      <span class="view-tag">Revenue</span>
-      <span class="view-tag">Donors</span>
-      <span class="view-tag">Channels</span>
-      <span class="view-tag">Designations</span>
-      <span class="view-tag">Top donations</span>
+    with preview_col:
+        st.markdown("""
+<div class="home-panel">
+  <p class="section-kicker">Available analytics</p>
+  <div class="view-row">
+    <div class="view-icon blue">📈</div>
+    <div>
+      <p class="view-title">General performance</p>
+      <p class="view-desc">Revenue, transactions, donor acquisition, channel mix, designations, gift size, and all-time top donations.</p>
+      <div class="view-tags">
+        <span class="view-tag">Revenue</span>
+        <span class="view-tag">Donors</span>
+        <span class="view-tag">Channels</span>
+        <span class="view-tag">Top donations</span>
+      </div>
     </div>
   </div>
-</div>
-
-<div class="view-row">
-  <div class="view-icon-wrap view-icon-green">🔁</div>
-  <div class="view-body">
-    <p class="view-title">Recurring analysis</p>
-    <p class="view-desc">Full recurring program — MRR growth, retention and churn
-    rates, cohort table, LTV estimates, gift size distribution, and top donors
-    by cohort.</p>
-    <div class="view-tags">
-      <span class="view-tag">MRR</span>
-      <span class="view-tag">Retention</span>
-      <span class="view-tag">Cohorts</span>
-      <span class="view-tag">Churn</span>
-      <span class="view-tag">LTV</span>
-      <span class="view-tag">Gift size</span>
+  <div class="view-row">
+    <div class="view-icon">🔁</div>
+    <div>
+      <p class="view-title">Recurring program</p>
+      <p class="view-desc">MRR, subscriber growth, retention and churn, cohorts, LTV, recurring gift size, and top donors by cohort.</p>
+      <div class="view-tags">
+        <span class="view-tag">MRR</span>
+        <span class="view-tag">Retention</span>
+        <span class="view-tag">Cohorts</span>
+        <span class="view-tag">LTV</span>
+      </div>
     </div>
   </div>
 </div>
@@ -409,14 +696,14 @@ if df_full is None:
     st.session_state.pop("file_name", None)
     st.stop()
 
+render_data_strip(df_full, st.session_state["file_name"])
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PAGE 1 — MONTHLY REPORT
 # ══════════════════════════════════════════════════════════════════════════════
 
 if page == "📈 General Analysis":
-    st.title("📈 KSE Monthly Analytics")
-
     available = sorted(df_full["month_key"].unique())
     labels    = [str(m) for m in available]
     today     = date.today()
@@ -497,6 +784,18 @@ if page == "📈 General Analysis":
         prev_keys = set(df_prev["donor_key"])
         curr_keys = set(df_cur["donor_key"])
         ret_pct   = len(prev_keys & curr_keys) / len(prev_keys) * 100 if prev_keys else 0
+
+    render_page_header(
+        "General analysis",
+        f"Monthly performance for {sel_label}",
+        "A focused view of revenue, donor movement, recurring activity, designations, channels, and the largest gifts in the dataset.",
+        [
+            f"{cur['donors']:,} donors",
+            f"{cur['txns']:,} transactions",
+            f"{fmt(cur['revenue'])} raised",
+            f"{fmt(cur['mrr'])} recurring",
+        ],
+    )
 
     t1, t2, t3, t4, t5, t6 = st.tabs([
         "📈 Revenue", "👥 Donors", "🔁 Recurring", "🎯 Designations", "📡 Channels", "🏆 Top Donations"
@@ -853,9 +1152,6 @@ if page == "📈 General Analysis":
 # ══════════════════════════════════════════════════════════════════════════════
 
 elif page == "🔁 Recurring Analysis":
-    st.title("🔁 Recurring Donor Analysis 2023-2026")
-    st.caption("Full recurring program breakdown: MRR, cohorts, retention, churn, LTV, designations, channels.")
-
     df_all = df_full
     df_rec_base = df_all[df_all["is_recurring"]].copy()
 
@@ -896,7 +1192,17 @@ elif page == "🔁 Recurring Analysis":
 
     all_months  = sorted(df["month_key"].unique())
     all_m_str   = [str(m) for m in all_months]
-    st.caption(f"🔁 {df['donor_key'].nunique():,} unique recurring donors | {len(df):,} transactions | {all_m_str[0]} → {all_m_str[-1]}")
+    render_page_header(
+        "Recurring analysis",
+        "Recurring donor health",
+        "MRR growth, active subscribers, retention, churn, cohort behavior, lifetime value, and recurring gift composition.",
+        [
+            f"{df['donor_key'].nunique():,} recurring donors",
+            f"{len(df):,} transactions",
+            f"{all_m_str[0]} to {all_m_str[-1]}",
+            f"{fmt(df['amount'].sum())} recurring revenue",
+        ],
+    )
 
     # monthly snapshots (on full recurring data for accuracy)
     df_rec_full = df_all[df_all["is_recurring"]].copy()
