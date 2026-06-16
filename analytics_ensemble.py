@@ -125,14 +125,15 @@ a{ color:var(--brand-bright); }
 .data-pill strong{ color:var(--ink); margin-left:0.45rem; font-weight:700; }
 
 /* metrics */
-div[data-testid="stMetric"]{ background:transparent; border:none; border-radius:0; padding:0.1rem 0.4rem 0.1rem 0; box-shadow:none; container-type:inline-size; }
+div[data-testid="stMetric"]{ position:relative; background:transparent; border:none; border-top:1px solid var(--line); border-radius:0; padding:0.85rem 0.5rem 0.1rem 0; margin-top:0.2rem; box-shadow:none; container-type:inline-size; }
+div[data-testid="stMetric"]::before{ content:""; position:absolute; top:-1px; left:0; width:24px; height:2px; background:var(--brand-bright); }
 div[data-testid="stMetric"] label{ color:var(--muted) !important; }
 div[data-testid="stMetric"] label p{ font-family:var(--mono) !important; font-size:0.66rem !important; font-weight:600 !important; letter-spacing:0.09em; text-transform:uppercase; color:var(--muted) !important; }
-div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--ink); font-size:clamp(1.3rem,14.5cqi,1.95rem); font-weight:700; letter-spacing:-0.02em; line-height:1.06; margin-top:0.18rem; white-space:nowrap; }
+div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--ink); font-size:clamp(1.3rem,14.5cqi,1.95rem); font-weight:700; letter-spacing:-0.02em; line-height:1.06; margin-top:0.34rem; white-space:nowrap; font-variant-numeric:tabular-nums; }
 div[data-testid="stMetricValue"], div[data-testid="stMetricValue"] *{ overflow:visible !important; text-overflow:clip !important; max-width:none !important; font-weight:700; }
-div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.76rem; background:transparent !important; padding:0.1rem 0 0 !important; }
+div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.74rem; background:transparent !important; padding:0.28rem 0 0 !important; font-variant-numeric:tabular-nums; }
 div[data-testid="stMetricDelta"] *{ font-weight:500; }
-div[data-testid="stMetricDelta"] svg{ width:0.85rem; height:0.85rem; }
+div[data-testid="stMetricDelta"] svg{ width:0.8rem; height:0.8rem; }
 
 /* buttons */
 .stButton > button, [data-testid="stBaseButton-secondary"]{ border-radius:10px !important; border:1px solid var(--line) !important; font-weight:600 !important; color:var(--ink-2) !important; }
@@ -147,9 +148,12 @@ div[data-testid="stMetricDelta"] svg{ width:0.85rem; height:0.85rem; }
 [data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) p{ color:var(--brand) !important; font-weight:600; }
 
 /* tabs */
-.stTabs [data-baseweb="tab-list"]{ gap:0.3rem; border-bottom:1px solid var(--line); }
-.stTabs [data-baseweb="tab"]{ border-radius:9px 9px 0 0; color:var(--muted); font-weight:600; font-size:0.9rem; padding:0.55rem 0.9rem; }
-.stTabs [aria-selected="true"]{ background:var(--paper); color:var(--brand) !important; border:1px solid var(--line); border-bottom-color:var(--paper); }
+.stTabs [data-baseweb="tab-list"]{ gap:0.4rem; border-bottom:1px solid var(--line); }
+.stTabs [data-baseweb="tab"]{ background:transparent !important; border:none !important; border-radius:0; color:var(--muted); font-weight:600; font-size:0.9rem; padding:0.6rem 0.35rem; }
+.stTabs [data-baseweb="tab"]:hover{ color:var(--ink-2); }
+.stTabs [aria-selected="true"]{ background:transparent !important; color:var(--brand) !important; border:none !important; }
+.stTabs [data-baseweb="tab-highlight"]{ background-color:var(--brand) !important; height:2.5px; }
+.stTabs [data-baseweb="tab-border"]{ background-color:var(--line) !important; }
 
 /* headings */
 h2,h3{ font-family:var(--display); color:var(--ink); letter-spacing:-0.01em; }
