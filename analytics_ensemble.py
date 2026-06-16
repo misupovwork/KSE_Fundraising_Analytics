@@ -17,17 +17,18 @@ def install_theme():
     st.markdown(
         """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-  --ink:#0C1B33; --ink-2:#1B2C49;
-  --canvas:#EDF1F7; --paper:#FFFFFF; --paper-2:#F6F8FC;
-  --brand:#0F3D7C; --brand-bright:#2D6BD2; --brand-wash:#E6EEFA;
-  --line:#D7DFEC; --muted:#566481;
-  --gold:#E0A52A; --good:#3FA66A;
-  --display:"Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --ink:#373B46; --ink-2:#4A4F5C;
+  --canvas:#F4F6F8; --paper:#FFFFFF; --paper-2:#F7FAF9;
+  --brand:#2BB77B; --brand-bright:#23A06C; --brand-wash:#E7F7F0;
+  --brand-deep:#15784C;
+  --line:#E5E9ED; --muted:#6A7180;
+  --gold:#2BB77B; --good:#2BB77B;
+  --display:"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --body:"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --mono:"Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 /* ---- base ---- */
