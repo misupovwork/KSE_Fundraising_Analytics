@@ -119,17 +119,20 @@ a{ color:var(--brand-bright); }
 .hero-pills{ display:flex; flex-wrap:wrap; gap:0.45rem; }
 .hero-pill{ font-family:var(--mono); display:inline-flex; align-items:center; min-height:28px; border:1px solid var(--line); border-radius:999px; background:var(--paper); color:var(--muted); font-size:0.7rem; font-weight:500; padding:0.26rem 0.7rem; white-space:nowrap; }
 
-.data-strip{ display:flex; flex-wrap:wrap; align-items:center; gap:0; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.7rem 1rem; margin:0 0 1.2rem; }
+.data-strip{ display:flex; flex-wrap:wrap; align-items:center; gap:0; background:transparent; border:none; border-bottom:1px solid var(--line); border-radius:0; padding:0 0 0.85rem; margin:0 0 1.5rem; }
 .data-pill{ font-family:var(--mono); display:inline-flex; align-items:center; font-size:0.72rem; font-weight:500; color:var(--muted); padding:0.1rem 0; }
 .data-pill + .data-pill{ border-left:1px solid var(--line); padding-left:0.8rem; margin-left:0.8rem; }
 .data-pill strong{ color:var(--ink); margin-left:0.45rem; font-weight:700; }
 
 /* metrics */
-div[data-testid="stMetric"]{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.95rem 1.05rem; box-shadow:0 1px 2px rgba(12,27,51,0.03); }
+div[data-testid="stMetric"]{ background:transparent; border:none; border-radius:0; padding:0.1rem 0.4rem 0.1rem 0; box-shadow:none; container-type:inline-size; }
 div[data-testid="stMetric"] label{ color:var(--muted) !important; }
-div[data-testid="stMetric"] label p{ font-family:var(--mono) !important; font-size:0.64rem !important; font-weight:600 !important; letter-spacing:0.06em; text-transform:uppercase; }
-div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--ink); font-size:clamp(1.3rem,2vw,1.7rem); font-weight:600; letter-spacing:-0.01em; }
-div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.78rem; }
+div[data-testid="stMetric"] label p{ font-family:var(--mono) !important; font-size:0.66rem !important; font-weight:600 !important; letter-spacing:0.09em; text-transform:uppercase; color:var(--muted) !important; }
+div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--ink); font-size:clamp(1.3rem,14.5cqi,1.95rem); font-weight:700; letter-spacing:-0.02em; line-height:1.06; margin-top:0.18rem; white-space:nowrap; }
+div[data-testid="stMetricValue"], div[data-testid="stMetricValue"] *{ overflow:visible !important; text-overflow:clip !important; max-width:none !important; font-weight:700; }
+div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.76rem; background:transparent !important; padding:0.1rem 0 0 !important; }
+div[data-testid="stMetricDelta"] *{ font-weight:500; }
+div[data-testid="stMetricDelta"] svg{ width:0.85rem; height:0.85rem; }
 
 /* buttons */
 .stButton > button, [data-testid="stBaseButton-secondary"]{ border-radius:10px !important; border:1px solid var(--line) !important; font-weight:600 !important; color:var(--ink-2) !important; }
@@ -225,8 +228,6 @@ def install_chart_theme():
 
 
 def render_page_header(kicker, title, copy, pills=None):
-    pills = pills or []
-    pill_html = "".join(f'<span class="hero-pill">{escape(str(p))}</span>' for p in pills)
     st.markdown(
         f"""
 <section class="page-hero">
@@ -238,7 +239,6 @@ def render_page_header(kicker, title, copy, pills=None):
       <p class="page-copy">{escape(copy)}</p>
     </div>
   </div>
-  <div class="hero-pills">{pill_html}</div>
 </section>
 """,
         unsafe_allow_html=True,
