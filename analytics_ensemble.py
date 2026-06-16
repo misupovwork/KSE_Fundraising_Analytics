@@ -17,145 +17,155 @@ def install_theme():
     st.markdown(
         """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
 :root{
-  --ink:#16181D; --ink-2:#3A3F4A;
-  --canvas:#FAFBFC; --paper:#FFFFFF; --paper-2:#F7F8FA;
-  --brand:#2BB77B; --brand-bright:#23A06C; --brand-wash:#E7F7F0; --brand-deep:#15784C;
-  --line:#ECECEF; --muted:#6B7280;
-  --gold:#2BB77B; --good:#16A34A; --neg:#E5484D;
-  --card-sh:0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.03);
-  --display:"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --navy:#0F2A52; --ink:#141A24; --ink-2:#46506A;
+  --canvas:#F6F8FC; --paper:#FFFFFF; --paper-2:#F2F5FB;
+  --brand:#1B4DB1; --brand-strong:#16409A; --brand-wash:#EAF0FB; --brand-line:#D4E0F4;
+  --gold:#C0892B; --gold-wash:#F7EFDD;
+  --line:#E5EAF3; --muted:#6B7488;
+  --good:#1E9E6A; --neg:#D5524E;
+  --card-sh:0 1px 2px rgba(15,42,82,0.05), 0 1px 3px rgba(15,42,82,0.04);
+  --card-sh-lg:0 16px 36px -20px rgba(15,42,82,0.32);
+  --display:"Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --body:"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono:"Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ---- base ---- */
 .stApp{ background:var(--canvas); color:var(--ink); font-family:var(--body); }
-[data-testid="stAppViewContainer"] > .main .block-container{ max-width:1240px; padding:2.2rem 2.4rem 4rem; }
+[data-testid="stAppViewContainer"] > .main .block-container{ max-width:1220px; padding:2.2rem 2.4rem 4rem; }
 [data-testid="stHeader"]{ background:transparent; }
 [data-testid="stToolbar"]{ right:1rem; }
-a{ color:var(--brand-deep); }
+a{ color:var(--brand); }
+::selection{ background:rgba(27,77,177,0.15); }
 
 /* ---- sidebar ---- */
 [data-testid="stSidebar"]{ background:var(--paper); border-right:1px solid var(--line); }
 [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
 [data-testid="stSidebar"] label, [data-testid="stSidebar"] span{ color:var(--muted); }
 
-.brand-block{ display:flex; gap:0.8rem; padding:0 0 1.15rem; border-bottom:1px solid var(--line); margin-bottom:0.4rem; }
-.brand-rule{ flex:0 0 3px; width:3px; border-radius:2px; background:var(--brand); }
-.brand-kicker{ font-size:0.64rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--brand-deep) !important; margin:0 0 0.34rem; }
-.brand-title{ font-family:var(--display); font-size:1.16rem; font-weight:700; line-height:1.05; letter-spacing:-0.02em; color:var(--ink) !important; margin:0; }
-.brand-subtitle{ font-size:0.78rem; line-height:1.5; color:var(--muted) !important; margin:0.5rem 0 0; }
+.brand-block{ display:flex; gap:0.85rem; padding:0 0 1.15rem; border-bottom:1px solid var(--line); margin-bottom:0.5rem; }
+.brand-rule{ flex:0 0 3px; width:3px; border-radius:2px; background:linear-gradient(var(--navy), var(--brand)); }
+.brand-kicker{ font-family:var(--mono); font-size:0.6rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--brand) !important; margin:0 0 0.4rem; }
+.brand-title{ font-family:var(--display); font-size:1.18rem; font-weight:700; line-height:1.04; letter-spacing:-0.02em; color:var(--navy) !important; margin:0; }
+.brand-subtitle{ font-size:0.78rem; line-height:1.5; color:var(--muted) !important; margin:0.55rem 0 0; }
+
+.side-label{ font-family:var(--mono); font-size:0.62rem !important; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted) !important; margin:0.2rem 0 0.55rem !important; }
 
 /* ---- labels ---- */
-.home-kicker,.page-kicker,.section-kicker{ font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--brand-deep); margin:0 0 0.5rem; }
-.section-kicker{ color:var(--muted); font-size:0.64rem; letter-spacing:0.16em; }
-.kick-slash{ color:var(--brand); margin:0 0.5em; font-weight:700; }
+.home-kicker,.page-kicker,.section-kicker{ font-family:var(--mono); font-size:0.64rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--brand); margin:0 0 0.5rem; }
+.section-kicker{ color:var(--muted); }
+.kick-slash{ color:var(--gold); margin:0 0.5em; font-weight:600; }
 
 /* ================= HOME ================= */
 .home-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:2.1rem; }
-.session-chip{ display:inline-flex; align-items:center; gap:0.45rem; font-size:0.72rem; font-weight:500; letter-spacing:0.01em; color:var(--muted); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:0.34rem 0.78rem; box-shadow:var(--card-sh); }
-.session-chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 3px rgba(43,183,123,0.16); }
+.session-chip{ display:inline-flex; align-items:center; gap:0.5rem; font-family:var(--mono); font-size:0.66rem; letter-spacing:0.03em; color:var(--muted); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:0.36rem 0.8rem; box-shadow:var(--card-sh); }
+.session-chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px rgba(30,158,106,0.16); }
 
-.home-hero{ display:flex; gap:1.3rem; }
-.hero-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:var(--brand); align-self:stretch; }
-.home-title{ font-family:var(--display); font-weight:700; font-size:clamp(2.05rem,3.3vw,3rem); line-height:1.05; letter-spacing:-0.025em; color:var(--ink); margin:0; max-width:15ch; }
+.home-hero{ display:flex; gap:1.4rem; }
+.hero-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:linear-gradient(var(--navy), var(--brand) 62%, var(--gold)); align-self:stretch; }
+.home-title{ font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,3.4vw,3.05rem); line-height:1.04; letter-spacing:-0.03em; color:var(--navy); margin:0; max-width:16ch; }
 .home-title .em{ color:var(--brand); }
-.home-copy{ font-size:1.04rem; line-height:1.62; color:var(--ink-2); max-width:47ch; margin:1.1rem 0 0; }
-.home-stats{ display:flex; gap:0; margin-top:1.7rem; flex-wrap:wrap; }
-.home-stat{ padding:0 1.1rem; }
+.home-copy{ font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:48ch; margin:1.15rem 0 0; }
+.home-stats{ display:flex; gap:0; margin-top:1.85rem; flex-wrap:wrap; }
+.home-stat{ padding:0 1.15rem; }
 .home-stat:first-child{ padding-left:0; }
 .home-stat + .home-stat{ border-left:1px solid var(--line); }
-.home-stat strong{ display:block; font-family:var(--display); font-size:0.95rem; font-weight:700; color:var(--ink); letter-spacing:-0.01em; }
-.home-stat span{ font-size:0.78rem; color:var(--muted); line-height:1.4; }
+.home-stat strong{ display:block; font-family:var(--display); font-size:0.92rem; font-weight:600; color:var(--ink); letter-spacing:-0.01em; }
+.home-stat span{ font-size:0.76rem; color:var(--muted); line-height:1.4; }
 
 /* upload module header */
-.upload-accent{ width:30px; height:3px; border-radius:2px; background:var(--brand); margin:0.15rem 0 0.7rem; }
-.upload-title{ font-family:var(--display); font-size:1.2rem; font-weight:700; color:var(--ink); margin:0 0 0.25rem; letter-spacing:-0.02em; }
-.upload-sub{ font-size:0.88rem; color:var(--muted); line-height:1.5; margin:0 0 0.2rem; }
-.upload-hint{ font-size:0.74rem; color:var(--muted); margin:0.85rem 0 0; }
+.upload-accent{ width:30px; height:3px; border-radius:2px; background:var(--gold); margin:0.15rem 0 0.75rem; }
+.upload-title{ font-family:var(--display); font-size:1.18rem; font-weight:600; color:var(--navy); margin:0 0 0.3rem; letter-spacing:-0.015em; }
+.upload-sub{ font-size:0.87rem; color:var(--muted); line-height:1.55; margin:0 0 0.2rem; }
+.upload-hint{ font-family:var(--mono); font-size:0.68rem; letter-spacing:0.01em; color:var(--muted); margin:0.9rem 0 0; }
 .upload-hint b{ color:var(--ink-2); font-weight:600; }
 
 /* real file_uploader -> dropzone card */
 [data-testid="stFileUploader"]{ margin-top:0.2rem; }
 [data-testid="stFileUploader"] label{ display:none; }
 [data-testid="stFileUploaderDropzone"], [data-testid="stFileUploader"] section{
-  background:var(--paper); border:1.5px dashed #CFE4D9; border-radius:14px; padding:1.5rem 1.4rem; transition:.18s; box-shadow:var(--card-sh);
+  background:var(--paper); border:1.5px dashed var(--brand-line); border-radius:14px; padding:1.5rem 1.4rem; transition:.18s; box-shadow:var(--card-sh);
 }
 [data-testid="stFileUploaderDropzone"]:hover, [data-testid="stFileUploader"] section:hover{
-  border-color:var(--brand); background:#F4FBF8;
+  border-color:var(--brand); background:var(--brand-wash);
 }
 [data-testid="stFileUploader"] small, [data-testid="stFileUploader"] span{ color:var(--muted); }
 [data-testid="stFileUploaderDropzoneInstructions"] span{ color:var(--ink) !important; font-weight:600; }
 [data-testid="stFileUploader"] svg{ color:var(--brand); fill:var(--brand); }
 [data-testid="stFileUploader"] button{ background:var(--brand) !important; color:#fff !important; border:1px solid var(--brand) !important; border-radius:10px !important; font-weight:600 !important; box-shadow:none !important; }
-[data-testid="stFileUploader"] button:hover{ border-color:var(--brand-deep) !important; background:var(--brand-deep) !important; color:#fff !important; }
+[data-testid="stFileUploader"] button:hover{ border-color:var(--brand-strong) !important; background:var(--brand-strong) !important; color:#fff !important; }
 
 /* section divider */
-.sec-head{ display:flex; align-items:center; gap:1rem; margin:2.4rem 0 1.4rem; }
-.sec-head .lbl{ font-size:0.7rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.sec-head{ display:flex; align-items:center; gap:1rem; margin:2.6rem 0 1.4rem; }
+.sec-head .lbl{ font-family:var(--mono); font-size:0.64rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
 .sec-head .ln{ height:1px; background:var(--line); flex:1; }
 
 /* capability cards */
-.cap{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:1.4rem 1.45rem; height:100%; transition:.18s; box-shadow:var(--card-sh); }
-.cap:hover{ transform:translateY(-2px); border-color:#D8DBDF; box-shadow:0 10px 28px -16px rgba(16,24,40,0.18); }
-.cap-top{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.7rem; }
-.cap-ico{ flex:0 0 40px; height:40px; border-radius:11px; background:var(--brand-wash); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:1.15rem; }
-.cap-ico.alt{ background:#EEF1F4; }
-.cap-name{ font-family:var(--display); font-size:1.05rem; font-weight:700; color:var(--ink); margin:0; letter-spacing:-0.01em; }
-.cap-desc{ font-size:0.88rem; line-height:1.55; color:var(--ink-2); margin:0 0 0.95rem; }
+.cap{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:1.5rem 1.5rem; height:100%; transition:.18s; box-shadow:var(--card-sh); }
+.cap:hover{ transform:translateY(-2px); border-color:var(--brand-line); box-shadow:var(--card-sh-lg); }
+.cap-top{ display:flex; align-items:center; gap:0.85rem; margin-bottom:0.8rem; }
+.cap-ico{ flex:0 0 42px; height:42px; border-radius:11px; background:var(--brand-wash); color:var(--brand); display:flex; align-items:center; justify-content:center; }
+.cap-ico svg{ width:20px; height:20px; }
+.cap-ico.alt{ background:var(--gold-wash); color:var(--gold); }
+.cap-name{ font-family:var(--display); font-size:1.05rem; font-weight:600; color:var(--navy); margin:0; letter-spacing:-0.01em; }
+.cap-desc{ font-size:0.88rem; line-height:1.58; color:var(--ink-2); margin:0 0 1rem; }
 .cap-tags{ display:flex; flex-wrap:wrap; gap:0.4rem; }
-.cap-tag{ font-size:0.7rem; font-weight:500; color:var(--muted); background:var(--paper-2); border:1px solid var(--line); border-radius:7px; padding:0.24rem 0.6rem; }
+.cap-tag{ font-family:var(--mono); font-size:0.66rem; letter-spacing:0.01em; color:var(--muted); background:var(--paper-2); border:1px solid var(--line); border-radius:7px; padding:0.26rem 0.6rem; }
 
 /* ============ ANALYTICS SHELL ============ */
-.page-hero{ display:flex; gap:1.2rem; align-items:flex-start; justify-content:space-between; margin:0 0 1.3rem; }
-.page-hero-left{ display:flex; gap:1.1rem; }
-.page-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:var(--brand); align-self:stretch; }
-.page-title{ font-family:var(--display); font-weight:700; font-size:clamp(1.7rem,2.6vw,2.4rem); line-height:1.05; letter-spacing:-0.02em; color:var(--ink); margin:0; }
-.page-copy{ font-size:0.96rem; line-height:1.55; color:var(--muted); max-width:760px; margin:0.5rem 0 0; }
+.page-hero{ display:flex; gap:1.2rem; align-items:flex-start; justify-content:space-between; margin:0 0 1.4rem; }
+.page-hero-left{ display:flex; gap:1.15rem; }
+.page-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:linear-gradient(var(--navy), var(--brand)); align-self:stretch; }
+.page-title{ font-family:var(--display); font-weight:700; font-size:clamp(1.7rem,2.6vw,2.35rem); line-height:1.06; letter-spacing:-0.02em; color:var(--navy); margin:0.05rem 0 0; }
+.page-copy{ font-size:0.95rem; line-height:1.58; color:var(--muted); max-width:760px; margin:0.55rem 0 0; }
 .hero-pills{ display:flex; flex-wrap:wrap; gap:0.45rem; }
-.hero-pill{ display:inline-flex; align-items:center; min-height:28px; border:1px solid var(--line); border-radius:999px; background:var(--paper); color:var(--muted); font-size:0.72rem; font-weight:500; padding:0.26rem 0.7rem; white-space:nowrap; }
+.hero-pill{ display:inline-flex; align-items:center; min-height:28px; border:1px solid var(--line); border-radius:999px; background:var(--paper); color:var(--ink-2); font-family:var(--mono); font-size:0.68rem; letter-spacing:0.01em; padding:0.26rem 0.72rem; white-space:nowrap; }
 
-.data-strip{ display:flex; flex-wrap:wrap; align-items:center; gap:0; background:transparent; border:none; border-bottom:1px solid var(--line); border-radius:0; padding:0 0 0.95rem; margin:0 0 1.7rem; }
-.data-pill{ display:inline-flex; align-items:center; font-size:0.74rem; font-weight:500; color:var(--muted); padding:0.1rem 0; }
+.data-strip{ display:flex; flex-wrap:wrap; align-items:center; gap:0; border-bottom:1px solid var(--line); padding:0 0 0.95rem; margin:0 0 1.7rem; }
+.data-pill{ display:inline-flex; align-items:center; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.02em; color:var(--muted); padding:0.1rem 0; }
 .data-pill + .data-pill{ border-left:1px solid var(--line); padding-left:0.85rem; margin-left:0.85rem; }
-.data-pill strong{ color:var(--ink); margin-left:0.45rem; font-weight:700; font-variant-numeric:tabular-nums; }
+.data-pill strong{ color:var(--ink); margin-left:0.5rem; font-weight:600; font-variant-numeric:tabular-nums; }
 
-/* KPI metric cards (Fundraise Up style) */
-div[data-testid="stMetric"]{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.95rem 0.95rem 1rem; box-shadow:var(--card-sh); container-type:inline-size; }
+/* KPI metric cards */
+div[data-testid="stMetric"]{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.95rem 1rem 1rem; box-shadow:var(--card-sh); container-type:inline-size; transition:.15s; }
+div[data-testid="stMetric"]:hover{ border-color:var(--brand-line); }
 div[data-testid="stMetric"] label{ color:var(--muted) !important; }
-div[data-testid="stMetric"] label p{ font-size:0.72rem !important; font-weight:600 !important; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted) !important; }
-div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--ink); font-size:clamp(1.05rem,13.5cqi,2.05rem); font-weight:700; letter-spacing:-0.025em; line-height:1.05; margin-top:0.4rem; white-space:nowrap; font-variant-numeric:tabular-nums; }
+div[data-testid="stMetric"] label p{ font-family:var(--mono); font-size:0.64rem !important; font-weight:600 !important; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted) !important; }
+div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--navy); font-size:clamp(1.05rem,13.5cqi,2rem); font-weight:700; letter-spacing:-0.03em; line-height:1.05; margin-top:0.45rem; white-space:nowrap; font-variant-numeric:tabular-nums; }
 div[data-testid="stMetricValue"], div[data-testid="stMetricValue"] *{ overflow:visible !important; text-overflow:clip !important; max-width:none !important; font-weight:700; }
-div[data-testid="stMetricDelta"]{ font-size:0.76rem; background:transparent !important; padding:0.3rem 0 0 !important; font-variant-numeric:tabular-nums; }
-div[data-testid="stMetricDelta"] *{ font-weight:600; }
-div[data-testid="stMetricDelta"] svg{ width:0.85rem; height:0.85rem; }
+div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.72rem; background:transparent !important; padding:0.35rem 0 0 !important; font-variant-numeric:tabular-nums; }
+div[data-testid="stMetricDelta"] svg{ width:0.85rem; height:0.85rem; fill:currentColor; }
+div[data-testid="stMetricDelta"] *{ font-weight:600; color:inherit !important; }
+div[data-testid="stMetricDelta"]:has(svg[data-testid="stMetricDeltaIcon-Up"]){ color:var(--good) !important; }
+div[data-testid="stMetricDelta"]:has(svg[data-testid="stMetricDeltaIcon-Down"]){ color:var(--neg) !important; }
 
 /* buttons */
 .stButton > button, [data-testid="stBaseButton-secondary"]{ border-radius:10px !important; border:1px solid var(--line) !important; font-weight:600 !important; color:var(--ink-2) !important; box-shadow:var(--card-sh); }
-.stButton > button:hover{ border-color:var(--brand) !important; color:var(--brand-deep) !important; background:var(--brand-wash) !important; }
+.stButton > button:hover{ border-color:var(--brand) !important; color:var(--brand-strong) !important; background:var(--brand-wash) !important; }
 
 /* sidebar radio nav */
 [data-testid="stSidebar"] [role="radiogroup"]{ gap:0.3rem; }
-[data-testid="stSidebar"] [role="radiogroup"] label{ border:1px solid transparent; border-radius:9px; padding:0.5rem 0.7rem; font-family:var(--body); font-size:0.9rem; font-weight:500; color:var(--ink-2) !important; transition:.15s; }
+[data-testid="stSidebar"] [role="radiogroup"] label{ position:relative; border:1px solid transparent; border-radius:9px; padding:0.55rem 0.75rem; font-family:var(--body); font-size:0.9rem; font-weight:500; color:var(--ink-2) !important; transition:.15s; }
 [data-testid="stSidebar"] [role="radiogroup"] label:hover{ background:var(--paper-2); }
-[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked){ background:var(--brand-wash); border-color:#BBE6D5; color:var(--brand-deep) !important; }
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked){ background:var(--brand-wash); border-color:var(--brand-line); }
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked)::before{ content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:18px; border-radius:0 2px 2px 0; background:var(--gold); }
 [data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) span,
-[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) p{ color:var(--brand-deep) !important; font-weight:600; }
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) p{ color:var(--brand-strong) !important; font-weight:600; }
 
 /* tabs */
 .stTabs [data-baseweb="tab-list"]{ gap:0.4rem; border-bottom:1px solid var(--line); }
-.stTabs [data-baseweb="tab"]{ background:transparent !important; border:none !important; border-radius:0; color:var(--muted); font-weight:600; font-size:0.9rem; padding:0.6rem 0.35rem; }
+.stTabs [data-baseweb="tab"]{ background:transparent !important; border:none !important; border-radius:0; color:var(--muted); font-weight:600; font-size:0.88rem; padding:0.6rem 0.4rem; }
 .stTabs [data-baseweb="tab"]:hover{ color:var(--ink); }
-.stTabs [aria-selected="true"]{ background:transparent !important; color:var(--brand-deep) !important; border:none !important; }
+.stTabs [aria-selected="true"]{ background:transparent !important; color:var(--brand-strong) !important; border:none !important; }
 .stTabs [data-baseweb="tab-highlight"]{ background-color:var(--brand) !important; height:2.5px; }
 .stTabs [data-baseweb="tab-border"]{ background-color:var(--line) !important; }
 
 /* headings */
-h2,h3,h4,h5{ font-family:var(--display); color:var(--ink); letter-spacing:-0.015em; }
-h3{ font-size:1.12rem !important; margin-top:0.4rem !important; font-weight:700 !important; }
+h2,h3,h4,h5{ font-family:var(--display); color:var(--navy); letter-spacing:-0.015em; }
+h3{ font-size:1.1rem !important; margin-top:0.4rem !important; font-weight:600 !important; }
 h4,h5{ font-weight:600 !important; }
 
 /* chart cards: each chart sits in a soft white card */
@@ -172,10 +182,15 @@ h4,h5{ font-weight:600 !important; }
 div[data-testid="stVerticalBlockBorderWrapper"]{ background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:var(--card-sh); }
 
 /* alerts */
-[data-testid="stAlert"]{ border-radius:12px; border:1px solid var(--line); }
+[data-testid="stAlert"]{ border-radius:12px; border:1px solid var(--line); font-size:0.88rem; }
+
+/* multiselect filter chips */
+[data-baseweb="tag"]{ background:var(--brand-wash) !important; border-radius:7px !important; }
+[data-baseweb="tag"] span{ color:var(--brand-strong) !important; }
+[data-baseweb="tag"] svg{ fill:var(--brand-strong) !important; }
 
 /* dividers */
-hr{ margin:1.4rem 0; border-color:var(--line); }
+hr{ margin:1.5rem 0; border-color:var(--line); }
 
 /* inputs */
 [data-baseweb="select"] > div{ border-radius:9px; border-color:var(--line); }
@@ -186,12 +201,13 @@ hr{ margin:1.4rem 0; border-color:var(--line); }
 @keyframes spineGrow{ from{ transform:scaleY(0);} to{ transform:scaleY(1);} }
 .reveal{ animation:riseIn .55s cubic-bezier(.2,.7,.3,1) both; }
 .reveal-1{ animation-delay:.03s; } .reveal-2{ animation-delay:.12s; } .reveal-3{ animation-delay:.2s; }
-.hero-spine{ transform-origin:top; animation:spineGrow .6s cubic-bezier(.2,.7,.3,1) both; }
-@media (prefers-reduced-motion: reduce){ .reveal,.hero-spine{ animation:none !important; } }
+.hero-spine,.page-spine{ transform-origin:top; animation:spineGrow .6s cubic-bezier(.2,.7,.3,1) both; }
+@media (prefers-reduced-motion: reduce){ .reveal,.hero-spine,.page-spine{ animation:none !important; } }
 
 @media (max-width: 900px){
   [data-testid="stAppViewContainer"] > .main .block-container{ padding:1.3rem 1rem 2rem; }
   .page-hero{ flex-direction:column; }
+  .home-hero{ gap:1rem; }
 }
 </style>
 """,
@@ -199,36 +215,52 @@ hr{ margin:1.4rem 0; border-color:var(--line); }
     )
 
 
+# ── Brand palette: single source of truth for every chart (mirrors CSS) ──
+NAVY      = "#0F2A52"
+BRAND     = "#1B4DB1"
+BLUE_MID  = "#5B8BE0"
+BLUE_SOFT = "#9DBDEE"
+GOLD      = "#C0892B"
+GOOD      = "#1E9E6A"
+NEG       = "#D5524E"
+INK       = "#141A24"
+MUTED     = "#6B7488"
+GRID      = "#EEF2F8"
+AXIS      = "#E5EAF3"
+# Categorical ramp — older→lighter, newer→deeper (encodes recency); gold + grey tail
+CAT = ["#9DBDEE", "#5B8BE0", "#3E6FCB", "#1B4DB1", "#16409A", "#0F2A52", "#C0892B", "#9AA6BC"]
+
+
 def install_chart_theme():
-    """Register a Fundraise Up-style Altair theme: single green accent, quiet greys, transparent."""
+    """Register the KSE Altair theme: institutional blue ramp, one gold highlight, quiet greys."""
     cfg = {
         "background": "transparent",
         "view": {"stroke": "transparent", "fill": "transparent", "continuousHeight": 290},
         "font": "Inter, ui-sans-serif, system-ui, sans-serif",
         "axis": {
-            "labelColor": "#6B7280", "titleColor": "#3A3F4A",
-            "gridColor": "#F0F1F3", "domainColor": "#ECECEF", "tickColor": "#ECECEF",
-            "labelFont": "Inter, sans-serif", "labelFontSize": 11,
-            "titleFont": "Inter, sans-serif", "titleFontWeight": 600, "titleFontSize": 12,
+            "labelColor": MUTED, "titleColor": MUTED,
+            "gridColor": GRID, "domainColor": AXIS, "tickColor": AXIS,
+            "labelFont": "IBM Plex Mono, ui-monospace, monospace", "labelFontSize": 10,
+            "titleFont": "IBM Plex Mono, ui-monospace, monospace", "titleFontWeight": 600, "titleFontSize": 10.5,
         },
         "legend": {
-            "labelColor": "#3A3F4A", "titleColor": "#6B7280",
-            "labelFont": "Inter, sans-serif", "titleFont": "Inter, sans-serif",
-            "titleFontSize": 10, "labelFontSize": 11,
+            "labelColor": "#46506A", "titleColor": MUTED,
+            "labelFont": "Inter, sans-serif", "titleFont": "IBM Plex Mono, monospace",
+            "titleFontSize": 9.5, "labelFontSize": 11, "symbolType": "circle", "symbolSize": 70,
         },
         "title": {
-            "color": "#16181D", "font": "Inter, sans-serif",
-            "fontWeight": 700, "fontSize": 14, "anchor": "start",
+            "color": NAVY, "font": "Space Grotesk, sans-serif",
+            "fontWeight": 600, "fontSize": 13.5, "anchor": "start", "dy": -4,
         },
         "range": {
-            "category": ["#2BB77B", "#15784C", "#86CFAE", "#3A3F4A", "#9AA1AC", "#3FA98A", "#1E7D52", "#C7CDD4"],
-            "heatmap": ["#F2F8F5", "#2BB77B"],
-            "ramp": ["#F2F8F5", "#2BB77B"],
+            "category": CAT,
+            "heatmap": ["#EFF4FB", BRAND],
+            "ramp": ["#EFF4FB", BRAND],
         },
-        "bar": {"color": "#2BB77B"},
-        "line": {"color": "#2BB77B", "strokeWidth": 2.5},
-        "point": {"color": "#2BB77B"},
-        "area": {"color": "#2BB77B", "opacity": 0.12},
+        "bar": {"color": BRAND},
+        "line": {"color": BRAND, "strokeWidth": 2.4},
+        "point": {"color": BRAND, "size": 50},
+        "area": {"color": BRAND, "opacity": 0.10},
     }
     try:
         @alt.theme.register("kse", enable=True)
@@ -243,6 +275,10 @@ def install_chart_theme():
 
 
 def render_page_header(kicker, title, copy, pills=None):
+    pills_html = ""
+    if pills:
+        chips = "".join(f'<span class="hero-pill">{escape(str(p))}</span>' for p in pills)
+        pills_html = f'<div class="hero-pills">{chips}</div>'
     st.markdown(
         f"""
 <section class="page-hero">
@@ -254,6 +290,7 @@ def render_page_header(kicker, title, copy, pills=None):
       <p class="page-copy">{escape(copy)}</p>
     </div>
   </div>
+  {pills_html}
 </section>
 """,
         unsafe_allow_html=True,
@@ -429,7 +466,7 @@ def load_and_normalise(uploaded_file):
 # SIDEBAR — adaptive: navigation when loaded, caption when not
 # ══════════════════════════════════════════════════════════════════
 
-page = "📈 General Analysis"
+page = "General Analysis"
 
 with st.sidebar:
     st.markdown(
@@ -451,8 +488,8 @@ with st.sidebar:
         page = st.radio(
             "Select view:",
             options=[
-                "📈 General Analysis",
-                "🔁 Recurring Analysis",
+                "General Analysis",
+                "Recurring Analysis",
             ],
             label_visibility="collapsed",
         )
@@ -475,7 +512,7 @@ if "file_data" not in st.session_state:
         """
 <div class="home-top">
   <p class="home-kicker">KSE Foundation<span class="kick-slash">/</span>Donation Analytics</p>
-  <span class="session-chip"><span class="dot"></span>Session-only · nothing stored</span>
+  <span class="session-chip"><span class="dot"></span>Session only · nothing is stored</span>
 </div>
 """,
         unsafe_allow_html=True,
@@ -488,12 +525,12 @@ if "file_data" not in st.session_state:
 <section class="home-hero reveal reveal-1">
   <div class="hero-spine"></div>
   <div>
-    <h1 class="home-title">Turn a Zoho export into <span class="em">fundraising answers.</span></h1>
-    <p class="home-copy">Drop in your latest donation export and move straight into revenue trends, donor acquisition, recurring health, cohorts, and your strongest supporters — without touching a spreadsheet.</p>
+    <h1 class="home-title">Your fundraising numbers, <span class="em">ready in one upload.</span></h1>
+    <p class="home-copy">Drop in your latest Zoho donation export and go straight to revenue trends, donor acquisition, recurring health, cohorts, and your largest gifts — no spreadsheet wrangling.</p>
     <div class="home-stats">
-      <div class="home-stat"><strong>CSV / XLSX</strong><span>Direct from Zoho CRM</span></div>
-      <div class="home-stat"><strong>Two modes</strong><span>General &amp; recurring</span></div>
-      <div class="home-stat"><strong>In-session</strong><span>Cleared when you leave</span></div>
+      <div class="home-stat"><strong>CSV or XLSX</strong><span>Straight from Zoho CRM</span></div>
+      <div class="home-stat"><strong>Two workspaces</strong><span>General &amp; recurring</span></div>
+      <div class="home-stat"><strong>In-session only</strong><span>Cleared when you leave</span></div>
     </div>
   </div>
 </section>
@@ -505,8 +542,8 @@ if "file_data" not in st.session_state:
             """
 <div class="reveal reveal-2">
   <div class="upload-accent"></div>
-  <p class="upload-title">Upload your CRM export</p>
-  <p class="upload-sub">Use your current Zoho donation export. The only required columns are donation amount and donation date.</p>
+  <p class="upload-title">Upload an export</p>
+  <p class="upload-sub">Use your current Zoho donation export. Only two columns are required — donation amount and donation date.</p>
 </div>
 """,
             unsafe_allow_html=True,
@@ -519,7 +556,7 @@ if "file_data" not in st.session_state:
         )
         st.markdown(
             """
-<p class="upload-hint"><b>Needs:</b> Donation amount in USD · Date of donation</p>
+<p class="upload-hint"><b>Required:</b> Donation amount in USD · Date of donation</p>
 """,
             unsafe_allow_html=True,
         )
@@ -541,10 +578,10 @@ if "file_data" not in st.session_state:
             """
 <div class="cap">
   <div class="cap-top">
-    <div class="cap-ico">📈</div>
+    <div class="cap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg></div>
     <p class="cap-name">General performance</p>
   </div>
-  <p class="cap-desc">Revenue and transaction trends, donor acquisition, channel mix, designations, gift-size distribution, and all-time top donations.</p>
+  <p class="cap-desc">Revenue and transaction trends, donor acquisition, channel and platform mix, designations, gift-size distribution, and the largest gifts on record.</p>
   <div class="cap-tags"><span class="cap-tag">Revenue</span><span class="cap-tag">Donors</span><span class="cap-tag">Channels</span><span class="cap-tag">Top gifts</span></div>
 </div>
 """,
@@ -555,10 +592,10 @@ if "file_data" not in st.session_state:
             """
 <div class="cap">
   <div class="cap-top">
-    <div class="cap-ico alt">🔁</div>
+    <div class="cap-ico alt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"/><path d="M20 5H9a5 5 0 0 0-5 5"/><path d="M7 22l-3-3 3-3"/><path d="M4 19h11a5 5 0 0 0 5-5"/></svg></div>
     <p class="cap-name">Recurring program</p>
   </div>
-  <p class="cap-desc">Monthly recurring revenue, subscriber growth, retention and churn, cohort curves, lifetime value, and top donors by cohort.</p>
+  <p class="cap-desc">Monthly recurring revenue, subscriber growth, retention and churn, cohort curves, lifetime value, and your strongest recurring donors.</p>
   <div class="cap-tags"><span class="cap-tag">MRR</span><span class="cap-tag">Retention</span><span class="cap-tag">Cohorts</span><span class="cap-tag">LTV</span></div>
 </div>
 """,
@@ -606,7 +643,7 @@ render_data_strip(df_full, st.session_state["file_name"])
 # PAGE 1 — MONTHLY REPORT
 # ══════════════════════════════════════════════════════════════════════════════
 
-if page == "📈 General Analysis":
+if page == "General Analysis":
     available = sorted(df_full["month_key"].unique())
     labels    = [str(m) for m in available]
     today     = date.today()
@@ -617,11 +654,11 @@ if page == "📈 General Analysis":
 
     with st.sidebar:
         st.divider()
-        st.header("⚙️ Settings")
+        st.markdown('<p class="side-label">Settings</p>', unsafe_allow_html=True)
         sel_label  = st.selectbox("Month to analyse:", labels, index=default_idx)
         plan_target = st.number_input("Revenue target USD (0 = skip)", min_value=0, value=0, step=1000)
 
-        st.header("🔽 Filters")
+        st.markdown('<p class="side-label">Filters</p>', unsafe_allow_html=True)
         if "source" in df_full.columns:
             all_sources = sorted(df_full["source"].fillna("(no source)").unique())
             sel_sources = st.multiselect("Source:", all_sources, default=all_sources)
@@ -690,8 +727,8 @@ if page == "📈 General Analysis":
 
     render_page_header(
         "General analysis",
-        f"Monthly performance for {sel_label}",
-        "A focused view of revenue, donor movement, recurring activity, designations, channels, and the largest gifts in the dataset.",
+        f"Monthly performance — {sel_label}",
+        "Revenue, donor movement, recurring activity, designations, channels, and the largest gifts — for the month you select.",
         [
             f"{cur['donors']:,} donors",
             f"{cur['txns']:,} transactions",
@@ -701,7 +738,7 @@ if page == "📈 General Analysis":
     )
 
     t1, t2, t3, t4, t5, t6 = st.tabs([
-        "📈 Revenue", "👥 Donors", "🔁 Recurring", "🎯 Designations", "📡 Channels", "🏆 Top Donations"
+        "Revenue", "Donors", "Recurring", "Designations", "Channels", "Top Donations"
     ])
 
     # ── TAB 1 — REVENUE ──────────────────────────────────────────
@@ -719,9 +756,9 @@ if page == "📈 General Analysis":
 
         if plan_target:
             if cur["revenue"] >= plan_target:
-                st.success(f"✅ Plan achieved: {fmt(cur['revenue'])} of {fmt(plan_target)} target.")
+                st.success(f"Plan achieved — {fmt(cur['revenue'])} of the {fmt(plan_target)} target.")
             else:
-                st.warning(f"⚠️ {fmt(plan_target - cur['revenue'])} short of {fmt(plan_target)} ({cur['revenue']/plan_target*100:.1f}%).")
+                st.warning(f"{fmt(plan_target - cur['revenue'])} short of the {fmt(plan_target)} target ({cur['revenue']/plan_target*100:.1f}% reached).")
 
         st.divider()
         trail_start = sel_period - 11
@@ -733,9 +770,9 @@ if page == "📈 General Analysis":
         bar = alt.Chart(rev_m).mark_bar(cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(
             x=alt.X("month_str:O", sort=list(rev_m["month_str"]), title=""),
             y=alt.Y("amount:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.condition(alt.datum.is_selected, alt.value("#6366f1"), alt.value("#93c5fd")),
+            color=alt.condition(alt.datum.is_selected, alt.value(GOLD), alt.value(BLUE_MID)),
             tooltip=["month_str:O", alt.Tooltip("amount:Q", format="$,.0f", title="Revenue")]
-        ).properties(height=300, title="Revenue — trailing 12 months (selected month in purple)")
+        ).properties(height=300, title="Trailing 12 months · selected month in gold")
         txt = bar.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.0f"))
         st.altair_chart(bar + txt, use_container_width=True)
 
@@ -750,7 +787,7 @@ if page == "📈 General Analysis":
         yoy_line_all = alt.Chart(yoy_all_pivot).mark_line(point=True, strokeWidth=2).encode(
             x=alt.X("month_label:O", sort=month_order, title="", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("amount:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.Color("year:N", title="Year", scale=alt.Scale(scheme="tableau10")),
+            color=alt.Color("year:N", title="Year", scale=alt.Scale(range=CAT)),
             tooltip=["year:N","month_label:O", alt.Tooltip("amount:Q", format="$,.0f", title="Revenue")]
         ).properties(height=300)
         st.altair_chart(yoy_line_all, use_container_width=True)
@@ -766,7 +803,7 @@ if page == "📈 General Analysis":
             with pc1:
                 donut = alt.Chart(plat_rev).mark_arc(innerRadius=70).encode(
                     theta=alt.Theta("Amount:Q"),
-                    color=alt.Color("Platform:N", scale=alt.Scale(scheme="tableau10")),
+                    color=alt.Color("Platform:N", scale=alt.Scale(range=CAT)),
                     tooltip=["Platform:N", alt.Tooltip("Amount:Q", format="$,.0f"), "pct:N"]
                 ).properties(height=280)
                 st.altair_chart(donut, use_container_width=True)
@@ -794,7 +831,7 @@ if page == "📈 General Analysis":
         d2.metric("New Donors",    f"{cur['new_donors']:,}", delta=mom_delta(cur["new_donors"], prev["new_donors"]) if prev else None)
         d3.metric("Returning",     f"{repeat_donors:,}")
         d4.metric("% New",         f"{new_pct:.1f}%")
-        st.caption("ℹ️ 'New' = first donation ever in the dataset.")
+        st.caption("New = a donor's first recorded donation anywhere in the dataset.")
 
         if ret_pct is not None:
             st.divider()
@@ -818,7 +855,7 @@ if page == "📈 General Analysis":
         bar_d = alt.Chart(dm).mark_bar().encode(
             x=alt.X("month_str:O", sort=list(dm["month_str"].unique()), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("donor_key:Q", title="Donors", stack="zero"),
-            color=alt.Color("Type:N", scale=alt.Scale(domain=["New","Returning"], range=["#6366f1","#93c5fd"])),
+            color=alt.Color("Type:N", scale=alt.Scale(domain=["New","Returning"], range=[BRAND, BLUE_SOFT])),
             tooltip=["month_str:O","Type:N", alt.Tooltip("donor_key:Q", title="Donors")]
         ).properties(height=280)
         st.altair_chart(bar_d, use_container_width=True)
@@ -847,7 +884,7 @@ if page == "📈 General Analysis":
         bar_mrr = alt.Chart(mrr_m).mark_bar(cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(
             x=alt.X("month_str:O", sort=list(mrr_m["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("amount:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.condition(alt.datum.is_selected, alt.value("#6366f1"), alt.value("#93c5fd")),
+            color=alt.condition(alt.datum.is_selected, alt.value(GOLD), alt.value(BLUE_MID)),
             tooltip=["month_str:O", alt.Tooltip("amount:Q", format="$,.0f", title="MRR")]
         ).properties(height=260)
         txt_mrr = bar_mrr.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.0f"))
@@ -871,7 +908,7 @@ if page == "📈 General Analysis":
             bar_ch = alt.Chart(melt).mark_bar().encode(
                 x=alt.X("month_str:O", sort=list(ch_df["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
                 y=alt.Y("Count:Q"),
-                color=alt.Color("Type:N", scale=alt.Scale(domain=["New Subscriptions","Churned"], range=["#22c55e","#ef4444"])),
+                color=alt.Color("Type:N", scale=alt.Scale(domain=["New Subscriptions","Churned"], range=[GOOD, NEG])),
                 tooltip=["month_str:O","Type:N","Count:Q"]
             ).properties(height=240)
             st.altair_chart(bar_ch, use_container_width=True)
@@ -887,7 +924,7 @@ if page == "📈 General Analysis":
         yoy_line_rec = alt.Chart(yoy_pivot).mark_line(point=True, strokeWidth=2).encode(
             x=alt.X("month_label:O", sort=month_order_rec, title="", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("amount:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.Color("year:N", title="Year", scale=alt.Scale(scheme="tableau10")),
+            color=alt.Color("year:N", title="Year", scale=alt.Scale(range=CAT)),
             tooltip=["year:N","month_label:O", alt.Tooltip("amount:Q", format="$,.0f", title="MRR")]
         ).properties(height=300)
         st.altair_chart(yoy_line_rec, use_container_width=True)
@@ -924,7 +961,7 @@ if page == "📈 General Analysis":
         desig["revenue_fmt"] = desig["revenue"].apply(fmt)
         if len(desig):
             top3 = desig.head(3)["revenue"].sum() / desig["revenue"].sum() * 100
-            st.info(f"📌 Top: **{desig.iloc[0]['designation_label']}** ({desig.iloc[0]['% Rev']}). Top 3 = {top3:.0f}% of total.")
+            st.info(f"Top designation: **{desig.iloc[0]['designation_label']}** at {desig.iloc[0]['% Rev']}. The top 3 make up {top3:.0f}% of the month.")
         st.dataframe(
             desig[["designation_label","revenue_fmt","% Rev","MoM","donors","txns"]].rename(columns={
                 "designation_label":"Designation","revenue_fmt":"Revenue","donors":"Donors","txns":"Txns"
@@ -1012,7 +1049,7 @@ if page == "📈 General Analysis":
 
         top10_txns["date"]         = top10_txns["date"].dt.strftime("%Y-%m-%d")
         top10_txns["amount_fmt"]   = top10_txns["amount"].apply(fmt)
-        top10_txns["is_recurring"] = top10_txns["is_recurring"].map({True: "✅ Recurring", False: "One-time"})
+        top10_txns["is_recurring"] = top10_txns["is_recurring"].map({True: "Recurring", False: "One-time"})
 
         rename_txns = {
             "date": "Date", "amount_fmt": "Amount", "donor_name": "Donor",
@@ -1054,7 +1091,7 @@ if page == "📈 General Analysis":
 # PAGE 2 — RECURRING ANALYSIS
 # ══════════════════════════════════════════════════════════════════════════════
 
-elif page == "🔁 Recurring Analysis":
+elif page == "Recurring Analysis":
     df_all = df_full
     df_rec_base = df_all[df_all["is_recurring"]].copy()
 
@@ -1063,7 +1100,7 @@ elif page == "🔁 Recurring Analysis":
 
     with st.sidebar:
         st.divider()
-        st.header("⚙️ Filters")
+        st.markdown('<p class="side-label">Filters</p>', unsafe_allow_html=True)
         years_avail = sorted(df_rec_base["year"].unique())
         sel_years   = st.multiselect("Year:", years_avail, default=years_avail)
 
@@ -1141,14 +1178,14 @@ elif page == "🔁 Recurring Analysis":
     snap_f = snap[snap["year"].isin(sel_years)]
 
     t1,t2,t3,t4,t5,t6,t7,t8 = st.tabs([
-        "📊 MRR & Metrics",
-        "🔄 Retention & Churn",
-        "➕ New vs. Churned",
-        "🧱 Cohort Table",
-        "💰 LTV",
-        "📦 Gift Distribution",
-        "🎯 Designations & Channels",
-        "🏆 Top Donors",
+        "MRR & Metrics",
+        "Retention & Churn",
+        "New vs. Churned",
+        "Cohort Table",
+        "LTV",
+        "Gift Distribution",
+        "Designations & Channels",
+        "Top Donors",
     ])
 
     # ── TAB 1 — MRR & METRICS ────────────────────────────────────
@@ -1172,7 +1209,7 @@ elif page == "🔁 Recurring Analysis":
         mrr_bar = alt.Chart(snap_f).mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("mrr:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.Color("year:O", scale=alt.Scale(scheme="tableau10"), title="Year"),
+            color=alt.Color("year:O", scale=alt.Scale(range=CAT), title="Year"),
             tooltip=["month_str:O", alt.Tooltip("mrr:Q", format="$,.0f"), alt.Tooltip("active:Q", title="Active")]
         ).properties(height=300)
         st.altair_chart(mrr_bar, use_container_width=True)
@@ -1182,14 +1219,14 @@ elif page == "🔁 Recurring Analysis":
         yoy_mrr = alt.Chart(snap).mark_line(point=True, strokeWidth=2).encode(
             x=alt.X("month_label:O", sort=month_order, title="", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("mrr:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.Color("year:O", scale=alt.Scale(scheme="tableau10"), title="Year"),
+            color=alt.Color("year:O", scale=alt.Scale(range=CAT), title="Year"),
             tooltip=["year:O","month_label:O", alt.Tooltip("mrr:Q", format="$,.0f")]
         ).properties(height=300)
         st.altair_chart(yoy_mrr, use_container_width=True)
 
         st.divider()
         st.subheader("Active Subscribers Over Time")
-        sub_line = alt.Chart(snap_f).mark_line(point=True, strokeWidth=2, color="#6366f1").encode(
+        sub_line = alt.Chart(snap_f).mark_line(point=True, strokeWidth=2, color=BRAND).encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("active:Q", title="Active Subscribers"),
             tooltip=["month_str:O","active:Q"]
@@ -1203,7 +1240,7 @@ elif page == "🔁 Recurring Analysis":
         gift_line = alt.Chart(gift_m).mark_line(point=True, strokeWidth=2).encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("USD:Q", title="USD", axis=alt.Axis(format="$,.0f")),
-            color=alt.Color("Metric:N", scale=alt.Scale(range=["#6366f1","#f59e0b"])),
+            color=alt.Color("Metric:N", scale=alt.Scale(range=[BRAND, GOLD])),
             tooltip=["month_str:O","Metric:N", alt.Tooltip("USD:Q", format="$,.2f")]
         ).properties(height=260)
         st.altair_chart(gift_line, use_container_width=True)
@@ -1225,12 +1262,12 @@ elif page == "🔁 Recurring Analysis":
 
         st.divider()
         st.subheader("Monthly Retention Rate")
-        ret_line = alt.Chart(snap_ret).mark_line(point=True, strokeWidth=2, color="#22c55e").encode(
+        ret_line = alt.Chart(snap_ret).mark_line(point=True, strokeWidth=2, color=GOOD).encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("retention:Q", title="Retention %", scale=alt.Scale(domain=[0,100])),
             tooltip=["month_str:O", alt.Tooltip("retention:Q", format=".1f", title="Retention %")]
         ).properties(height=280)
-        ref_line = alt.Chart(pd.DataFrame({"y":[80]})).mark_rule(color="#ef4444", strokeDash=[6,3], strokeWidth=1.5).encode(y="y:Q")
+        ref_line = alt.Chart(pd.DataFrame({"y":[80]})).mark_rule(color=NEG, strokeDash=[6,3], strokeWidth=1.5).encode(y="y:Q")
         st.altair_chart(ret_line + ref_line, use_container_width=True)
         st.caption("Red dashed line = 80% retention benchmark.")
 
@@ -1239,7 +1276,7 @@ elif page == "🔁 Recurring Analysis":
         churn_bar = alt.Chart(snap_ret).mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("churn_rate:Q", title="Churn %"),
-            color=alt.condition(alt.datum.churn_rate > 20, alt.value("#ef4444"), alt.value("#f59e0b")),
+            color=alt.condition(alt.datum.churn_rate > 20, alt.value(NEG), alt.value(GOLD)),
             tooltip=["month_str:O", alt.Tooltip("churn_rate:Q", format=".1f"), alt.Tooltip("churned:Q", title="Donors churned")]
         ).properties(height=260)
         st.altair_chart(churn_bar, use_container_width=True)
@@ -1251,7 +1288,7 @@ elif page == "🔁 Recurring Analysis":
         yoy_ret = alt.Chart(snap_ret2).mark_line(point=True, strokeWidth=2).encode(
             x=alt.X("month_label:O", sort=month_order, title="", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("retention:Q", title="Retention %", scale=alt.Scale(domain=[0,100])),
-            color=alt.Color("year:O", scale=alt.Scale(scheme="tableau10"), title="Year"),
+            color=alt.Color("year:O", scale=alt.Scale(range=CAT), title="Year"),
             tooltip=["year:O","month_label:O", alt.Tooltip("retention:Q", format=".1f")]
         ).properties(height=280)
         st.altair_chart(yoy_ret, use_container_width=True)
@@ -1276,10 +1313,10 @@ elif page == "🔁 Recurring Analysis":
         nc_bar = alt.Chart(nc_long).mark_bar().encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("count:Q", title="Subscribers", axis=alt.Axis(labelExpr="abs(datum.value)")),
-            color=alt.Color("Type:N", scale=alt.Scale(domain=["New","Churned"], range=["#22c55e","#ef4444"])),
+            color=alt.Color("Type:N", scale=alt.Scale(domain=["New","Churned"], range=[GOOD, NEG])),
             tooltip=["month_str:O","Type:N","count:Q"]
         ).properties(height=300)
-        zero_line = alt.Chart(pd.DataFrame({"y":[0]})).mark_rule(color="#6b7280", strokeWidth=1).encode(y="y:Q")
+        zero_line = alt.Chart(pd.DataFrame({"y":[0]})).mark_rule(color=MUTED, strokeWidth=1).encode(y="y:Q")
         st.altair_chart(nc_bar + zero_line, use_container_width=True)
         st.caption("Green = new subscribers. Red = churned. Net growth = green − red.")
 
@@ -1289,7 +1326,7 @@ elif page == "🔁 Recurring Analysis":
         net_bar = alt.Chart(snap_nc).mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
             x=alt.X("month_str:O", sort=list(snap_f["month_str"]), title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("net:Q", title="Net change"),
-            color=alt.condition(alt.datum.net >= 0, alt.value("#22c55e"), alt.value("#ef4444")),
+            color=alt.condition(alt.datum.net >= 0, alt.value(GOOD), alt.value(NEG)),
             tooltip=["month_str:O", alt.Tooltip("net:Q", title="Net growth"), "new:Q","churned:Q"]
         ).properties(height=240)
         st.altair_chart(net_bar, use_container_width=True)
@@ -1299,7 +1336,7 @@ elif page == "🔁 Recurring Analysis":
         yoy_new = alt.Chart(snap).mark_line(point=True, strokeWidth=2).encode(
             x=alt.X("month_label:O", sort=month_order, title="", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("new:Q", title="New Subscribers"),
-            color=alt.Color("year:O", scale=alt.Scale(scheme="tableau10"), title="Year"),
+            color=alt.Color("year:O", scale=alt.Scale(range=CAT), title="Year"),
             tooltip=["year:O","month_label:O","new:Q"]
         ).properties(height=260)
         st.altair_chart(yoy_new, use_container_width=True)
@@ -1334,18 +1371,18 @@ elif page == "🔁 Recurring Analysis":
         cohort_table = cohort_table[cohort_table.index.str[:4].astype(int).isin(sel_years)]
 
         def style_cohort(val):
-            if pd.isna(val): return "background-color: #1f2937; color: #374151;"
-            if val >= 90:    return "background-color: #14532d; color: #bbf7d0;"
-            if val >= 75:    return "background-color: #166534; color: #dcfce7;"
-            if val >= 60:    return "background-color: #854d0e; color: #fef9c3;"
-            if val >= 40:    return "background-color: #7c2d12; color: #ffedd5;"
-            return                  "background-color: #450a0a; color: #fecaca;"
+            if pd.isna(val): return "background-color: #F3F6FB; color: #C2C9D6;"
+            if val >= 90:    return "background-color: #0F2A52; color: #EAF0FB;"
+            if val >= 75:    return "background-color: #1B4DB1; color: #FFFFFF;"
+            if val >= 60:    return "background-color: #5B8BE0; color: #FFFFFF;"
+            if val >= 40:    return "background-color: #AFC9EE; color: #0F2A52;"
+            return                  "background-color: #F6E2DC; color: #B23A36;"
 
         styled = cohort_table.style.map(style_cohort).format(
             lambda v: f"{v:.0f}%" if not pd.isna(v) else ""
         )
         st.dataframe(styled, use_container_width=True)
-        st.caption("🟢 ≥90%  🟡 75–90%  🟠 60–75%  🔴 <60%  ⬛ no data")
+        st.caption("Deeper blue = stronger retention · warm = below 40% · blank = no data.")
 
         st.divider()
         st.subheader("Cohort Size at Start")
@@ -1396,7 +1433,7 @@ elif page == "🔁 Recurring Analysis":
         ly_bar = alt.Chart(ltv_by_year).mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
             x=alt.X("cohort_year:O", title="Cohort Year"),
             y=alt.Y("avg_ltv:Q", title="Avg LTV (USD)", axis=alt.Axis(format="$,.0f")),
-            color=alt.Color("cohort_year:O", scale=alt.Scale(scheme="tableau10"), legend=None),
+            color=alt.Color("cohort_year:O", scale=alt.Scale(range=CAT), legend=None),
             tooltip=["cohort_year:O",
                      alt.Tooltip("avg_ltv:Q", format="$,.0f", title="Avg LTV"),
                      alt.Tooltip("median_ltv:Q", format="$,.0f", title="Median LTV"),
@@ -1449,7 +1486,7 @@ elif page == "🔁 Recurring Analysis":
         dist_yoy_bar = alt.Chart(dist_yoy).mark_bar().encode(
             x=alt.X("bracket:O", sort=LABELS, title="", axis=alt.Axis(labelAngle=-45)),
             y=alt.Y("Transactions:Q"),
-            color=alt.Color("year:N", scale=alt.Scale(scheme="tableau10"), title="Year"),
+            color=alt.Color("year:N", scale=alt.Scale(range=CAT), title="Year"),
             xOffset="year:N",
             tooltip=["year:N","bracket:O","Transactions:Q"]
         ).properties(height=280)
@@ -1468,7 +1505,7 @@ elif page == "🔁 Recurring Analysis":
         desig["% Rev"] = (desig["revenue"] / total_rev * 100).apply(lambda x: f"{x:.1f}%")
         if len(desig):
             top3_pct = desig.head(3)["revenue"].sum() / total_rev * 100
-            st.info(f"📌 Top: **{desig.iloc[0]['designation_label']}** ({desig.iloc[0]['% Rev']}). Top 3 = {top3_pct:.0f}% of recurring revenue.")
+            st.info(f"Top designation: **{desig.iloc[0]['designation_label']}** at {desig.iloc[0]['% Rev']}. The top 3 make up {top3_pct:.0f}% of recurring revenue.")
         desig_display = desig.copy()
         desig_display["revenue"]  = desig_display["revenue"].apply(fmt)
         desig_display["avg_gift"] = desig_display["avg_gift"].apply(fmt)
@@ -1554,7 +1591,7 @@ elif page == "🔁 Recurring Analysis":
         bar_top = alt.Chart(cohort_donors).mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
             x=alt.X("total_paid:Q", title="Total Paid (USD)", axis=alt.Axis(format="$,.0f")),
             y=alt.Y("donor_name:O", sort="-x", title=""),
-            color=alt.Color("designation:N", scale=alt.Scale(scheme="tableau10"), title="Designation"),
+            color=alt.Color("designation:N", scale=alt.Scale(range=CAT), title="Designation"),
             tooltip=["donor_name:O", alt.Tooltip("total_paid:Q", format="$,.0f"),
                      "months_active:Q", alt.Tooltip("avg_gift:Q", format="$,.0f")]
         ).properties(height=max(250, top_n * 28))
