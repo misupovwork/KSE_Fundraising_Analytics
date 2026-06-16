@@ -13,360 +13,215 @@ st.set_page_config(page_title="KSE Donation Analytics", page_icon="📊", layout
 
 
 def install_theme():
-    """Central visual system for the Streamlit shell."""
+    """Central visual system for the Streamlit shell — KSE blue-led design system."""
     st.markdown(
         """
 <style>
-:root {
-    --bg: #f6f7f2;
-    --panel: #ffffff;
-    --panel-soft: #fbfbf7;
-    --ink: #18211f;
-    --muted: #65716d;
-    --line: #dfe5dd;
-    --green: #1f7a5f;
-    --green-soft: #e6f3ed;
-    --blue: #315a9d;
-    --blue-soft: #e8eef9;
-    --gold: #a96f1f;
-    --rose: #a43d56;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --ink:#0C1B33; --ink-2:#1B2C49;
+  --canvas:#EDF1F7; --paper:#FFFFFF; --paper-2:#F6F8FC;
+  --brand:#0F3D7C; --brand-bright:#2D6BD2; --brand-wash:#E6EEFA;
+  --line:#D7DFEC; --muted:#566481;
+  --gold:#E0A52A; --good:#3FA66A;
+  --display:"Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --body:"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-.stApp {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
+/* ---- base ---- */
+.stApp{ background:var(--canvas); color:var(--ink); font-family:var(--body); }
+[data-testid="stAppViewContainer"] > .main .block-container{ max-width:1200px; padding:2.2rem 2.4rem 3.5rem; }
+[data-testid="stHeader"]{ background:transparent; }
+[data-testid="stToolbar"]{ right:1rem; }
+a{ color:var(--brand-bright); }
 
-[data-testid="stAppViewContainer"] > .main .block-container {
-    max-width: 1320px;
-    padding: 1.35rem 2.25rem 3rem;
-}
-
-[data-testid="stHeader"] {
-    background: rgba(246, 247, 242, 0.86);
-    backdrop-filter: blur(12px);
-}
-
-[data-testid="stSidebar"] {
-    background: #ffffff;
-    border-right: 1px solid var(--line);
-}
-
+/* ---- sidebar ---- */
+[data-testid="stSidebar"]{ background:var(--paper); border-right:1px solid var(--line); }
 [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] span {
-    color: var(--muted);
+[data-testid="stSidebar"] label, [data-testid="stSidebar"] span{ color:var(--muted); }
+
+.brand-block{ display:flex; gap:0.8rem; padding:0 0 1.15rem; border-bottom:1px solid var(--line); margin-bottom:0.4rem; }
+.brand-rule{ flex:0 0 3px; width:3px; border-radius:2px; background:var(--gold); }
+.brand-kicker{ font-family:var(--mono); font-size:0.64rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--brand-bright) !important; margin:0 0 0.34rem; }
+.brand-title{ font-family:var(--display); font-size:1.16rem; font-weight:600; line-height:1.05; letter-spacing:-0.01em; color:var(--ink) !important; margin:0; }
+.brand-subtitle{ font-size:0.78rem; line-height:1.5; color:var(--muted) !important; margin:0.5rem 0 0; }
+
+/* ---- mono instrument labels ---- */
+.home-kicker,.page-kicker,.section-kicker{ font-family:var(--mono); font-size:0.7rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--brand-bright); margin:0 0 0.5rem; }
+.section-kicker{ color:var(--muted); font-size:0.64rem; letter-spacing:0.2em; }
+.kick-slash{ color:var(--gold); margin:0 0.5em; font-weight:700; }
+
+/* ================= HOME ================= */
+.home-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:2.1rem; }
+.session-chip{ display:inline-flex; align-items:center; gap:0.45rem; font-family:var(--mono); font-size:0.68rem; font-weight:500; letter-spacing:0.04em; color:var(--muted); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:0.34rem 0.72rem; }
+.session-chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px rgba(63,166,106,0.16); }
+
+.home-hero{ display:flex; gap:1.3rem; }
+.hero-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:linear-gradient(var(--gold),#c79a2c); align-self:stretch; }
+.home-title{ font-family:var(--display); font-weight:600; font-size:clamp(2.05rem,3.3vw,3rem); line-height:1.04; letter-spacing:-0.02em; color:var(--ink); margin:0; max-width:15ch; }
+.home-title .em{ color:var(--brand); }
+.home-copy{ font-size:1.04rem; line-height:1.62; color:var(--ink-2); max-width:47ch; margin:1.1rem 0 0; }
+.home-stats{ display:flex; gap:0; margin-top:1.6rem; flex-wrap:wrap; }
+.home-stat{ padding:0 1rem; }
+.home-stat:first-child{ padding-left:0; }
+.home-stat + .home-stat{ border-left:1px solid var(--line); }
+.home-stat strong{ display:block; font-family:var(--mono); font-size:0.92rem; font-weight:600; color:var(--ink); letter-spacing:-0.01em; }
+.home-stat span{ font-size:0.78rem; color:var(--muted); line-height:1.4; }
+
+/* upload module header */
+.upload-accent{ width:30px; height:3px; border-radius:2px; background:var(--gold); margin:0.15rem 0 0.7rem; }
+.upload-title{ font-family:var(--display); font-size:1.2rem; font-weight:600; color:var(--ink); margin:0 0 0.25rem; letter-spacing:-0.01em; }
+.upload-sub{ font-size:0.88rem; color:var(--muted); line-height:1.5; margin:0 0 0.2rem; }
+.upload-hint{ font-family:var(--mono); font-size:0.72rem; color:var(--muted); margin:0.85rem 0 0; }
+.upload-hint b{ color:var(--ink-2); font-weight:600; }
+
+/* real file_uploader -> dropzone card */
+[data-testid="stFileUploader"]{ margin-top:0.2rem; }
+[data-testid="stFileUploader"] label{ display:none; }
+[data-testid="stFileUploaderDropzone"], [data-testid="stFileUploader"] section{
+  background:var(--paper); border:1.5px dashed #a8bdd9; border-top:3px solid var(--gold);
+  border-radius:14px; padding:1.45rem 1.3rem; transition:.18s;
+  box-shadow:0 1px 2px rgba(12,27,51,0.04), 0 22px 44px -30px rgba(15,61,124,0.30);
 }
-
-.brand-block {
-    border-bottom: 1px solid var(--line);
-    padding: 0.35rem 0 1.1rem;
-    margin-bottom: 1rem;
+[data-testid="stFileUploaderDropzone"]:hover, [data-testid="stFileUploader"] section:hover{
+  border-color:var(--brand-bright); border-top-color:var(--gold); background:#f3f8ff;
 }
+[data-testid="stFileUploader"] small, [data-testid="stFileUploader"] span{ color:var(--muted); }
+[data-testid="stFileUploaderDropzoneInstructions"] span{ color:var(--ink) !important; font-weight:600; }
+[data-testid="stFileUploader"] svg{ color:var(--brand); fill:var(--brand); }
+[data-testid="stFileUploader"] button{ background:#fff !important; color:var(--brand) !important; border:1px solid var(--line) !important; border-radius:9px !important; font-weight:600 !important; }
+[data-testid="stFileUploader"] button:hover{ border-color:var(--brand-bright) !important; background:var(--brand-wash) !important; }
 
-.brand-kicker,
-.home-kicker,
-.page-kicker,
-.section-kicker {
-    color: var(--green);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin: 0 0 0.35rem;
-}
+/* section divider */
+.sec-head{ display:flex; align-items:center; gap:1rem; margin:2.1rem 0 1.3rem; }
+.sec-head .lbl{ font-family:var(--mono); font-size:0.7rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.sec-head .ln{ height:1px; background:var(--line); flex:1; }
 
-.brand-title {
-    color: var(--ink);
-    font-size: 1.35rem;
-    font-weight: 850;
-    line-height: 1.05;
-    margin: 0;
-}
+/* capability cards */
+.cap{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1.35rem; height:100%; transition:.18s; }
+.cap:hover{ transform:translateY(-2px); border-color:#c2d4ee; box-shadow:0 18px 36px -26px rgba(15,61,124,0.32); }
+.cap-top{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.7rem; }
+.cap-ico{ flex:0 0 40px; height:40px; border-radius:11px; background:var(--brand-wash); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:1.15rem; }
+.cap-ico.alt{ background:#FBF1DA; }
+.cap-name{ font-family:var(--display); font-size:1.05rem; font-weight:600; color:var(--ink); margin:0; letter-spacing:-0.01em; }
+.cap-desc{ font-size:0.88rem; line-height:1.55; color:var(--ink-2); margin:0 0 0.95rem; }
+.cap-tags{ display:flex; flex-wrap:wrap; gap:0.4rem; }
+.cap-tag{ font-family:var(--mono); font-size:0.68rem; font-weight:500; color:var(--muted); background:var(--paper-2); border:1px solid var(--line); border-radius:7px; padding:0.24rem 0.55rem; }
 
-.brand-subtitle {
-    color: var(--muted);
-    font-size: 0.82rem;
-    line-height: 1.45;
-    margin: 0.45rem 0 0;
-}
+/* ============ ANALYTICS SHELL ============ */
+.page-hero{ display:flex; gap:1.2rem; align-items:flex-start; justify-content:space-between; margin:0 0 1.1rem; }
+.page-hero-left{ display:flex; gap:1.1rem; }
+.page-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:linear-gradient(var(--gold),#c79a2c); align-self:stretch; }
+.page-title{ font-family:var(--display); font-weight:600; font-size:clamp(1.7rem,2.6vw,2.4rem); line-height:1.04; letter-spacing:-0.015em; color:var(--ink); margin:0; }
+.page-copy{ font-size:0.96rem; line-height:1.55; color:var(--muted); max-width:760px; margin:0.5rem 0 0; }
+.hero-pills{ display:flex; flex-wrap:wrap; gap:0.45rem; }
+.hero-pill{ font-family:var(--mono); display:inline-flex; align-items:center; min-height:28px; border:1px solid var(--line); border-radius:999px; background:var(--paper); color:var(--muted); font-size:0.7rem; font-weight:500; padding:0.26rem 0.7rem; white-space:nowrap; }
 
-.page-hero,
-.data-strip,
-.home-hero,
-.home-panel {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    box-shadow: 0 18px 45px rgba(38, 48, 43, 0.07);
-}
+.data-strip{ display:flex; flex-wrap:wrap; align-items:center; gap:0; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.7rem 1rem; margin:0 0 1.2rem; }
+.data-pill{ font-family:var(--mono); display:inline-flex; align-items:center; font-size:0.72rem; font-weight:500; color:var(--muted); padding:0.1rem 0; }
+.data-pill + .data-pill{ border-left:1px solid var(--line); padding-left:0.8rem; margin-left:0.8rem; }
+.data-pill strong{ color:var(--ink); margin-left:0.45rem; font-weight:700; }
 
-.page-hero {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding: 1.35rem 1.45rem;
-    margin: 0 0 1rem;
-}
+/* metrics */
+div[data-testid="stMetric"]{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.95rem 1.05rem; box-shadow:0 1px 2px rgba(12,27,51,0.03); }
+div[data-testid="stMetric"] label{ color:var(--muted) !important; }
+div[data-testid="stMetric"] label p{ font-family:var(--mono) !important; font-size:0.64rem !important; font-weight:600 !important; letter-spacing:0.06em; text-transform:uppercase; }
+div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--ink); font-size:clamp(1.3rem,2vw,1.7rem); font-weight:600; letter-spacing:-0.01em; }
+div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.78rem; }
 
-.page-title {
-    color: var(--ink);
-    font-size: clamp(1.75rem, 3vw, 2.55rem);
-    font-weight: 850;
-    letter-spacing: 0;
-    line-height: 1.05;
-    margin: 0;
-}
+/* buttons */
+.stButton > button, [data-testid="stBaseButton-secondary"]{ border-radius:10px !important; border:1px solid var(--line) !important; font-weight:600 !important; color:var(--ink-2) !important; }
+.stButton > button:hover{ border-color:var(--brand-bright) !important; color:var(--brand) !important; background:var(--brand-wash) !important; }
 
-.page-copy {
-    color: var(--muted);
-    font-size: 0.98rem;
-    line-height: 1.55;
-    max-width: 760px;
-    margin: 0.55rem 0 0;
-}
+/* sidebar radio nav */
+[data-testid="stSidebar"] [role="radiogroup"]{ gap:0.3rem; }
+[data-testid="stSidebar"] [role="radiogroup"] label{ border:1px solid transparent; border-radius:9px; padding:0.5rem 0.65rem; font-family:var(--body); font-size:0.9rem; font-weight:500; color:var(--ink-2) !important; transition:.15s; }
+[data-testid="stSidebar"] [role="radiogroup"] label:hover{ background:var(--paper-2); }
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked){ background:var(--brand-wash); border-color:#cfe0f6; color:var(--brand) !important; }
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) span,
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) p{ color:var(--brand) !important; font-weight:600; }
 
-.hero-pills,
-.data-strip,
-.home-stats,
-.view-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
+/* tabs */
+.stTabs [data-baseweb="tab-list"]{ gap:0.3rem; border-bottom:1px solid var(--line); }
+.stTabs [data-baseweb="tab"]{ border-radius:9px 9px 0 0; color:var(--muted); font-weight:600; font-size:0.9rem; padding:0.55rem 0.9rem; }
+.stTabs [aria-selected="true"]{ background:var(--paper); color:var(--brand) !important; border:1px solid var(--line); border-bottom-color:var(--paper); }
 
-.hero-pill,
-.data-pill,
-.view-tag {
-    display: inline-flex;
-    align-items: center;
-    min-height: 30px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--panel-soft);
-    color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 750;
-    padding: 0.28rem 0.72rem;
-    white-space: nowrap;
-}
+/* headings */
+h2,h3{ font-family:var(--display); color:var(--ink); letter-spacing:-0.01em; }
+h3{ font-size:1.12rem !important; margin-top:0.4rem !important; font-weight:600 !important; }
 
-.data-strip {
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 1rem;
-    margin: 0 0 1rem;
-    box-shadow: none;
-}
+/* dataframe / table */
+[data-testid="stDataFrame"], [data-testid="stTable"]{ border:1px solid var(--line); border-radius:12px; overflow:hidden; }
 
-.data-pill strong {
-    color: var(--ink);
-    margin-left: 0.35rem;
-}
+/* alerts */
+[data-testid="stAlert"]{ border-radius:12px; border:1px solid var(--line); }
 
-.home-hero {
-    padding: clamp(1.4rem, 4vw, 2.2rem);
-    margin: 0 auto 1rem;
-}
+/* dividers */
+hr{ margin:1.2rem 0; border-color:var(--line); }
 
-.home-title {
-    color: var(--ink);
-    font-size: clamp(2.05rem, 5vw, 4rem);
-    font-weight: 900;
-    letter-spacing: 0;
-    line-height: 0.98;
-    max-width: 900px;
-    margin: 0;
-}
+/* charts: remove default white plot bg so they live on the canvas */
+[data-testid="stVegaLiteChart"], [data-testid="stArrowVegaLiteChart"]{ background:transparent !important; }
 
-.home-copy {
-    color: var(--muted);
-    font-size: 1.02rem;
-    line-height: 1.65;
-    max-width: 720px;
-    margin: 1rem 0 0;
-}
+/* inputs */
+[data-baseweb="select"] > div{ border-radius:9px; border-color:var(--line); }
 
-.home-stats {
-    margin-top: 1.3rem;
-}
+/* page-load reveal */
+@keyframes riseIn{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+@keyframes spineGrow{ from{ transform:scaleY(0);} to{ transform:scaleY(1);} }
+.reveal{ animation:riseIn .55s cubic-bezier(.2,.7,.3,1) both; }
+.reveal-1{ animation-delay:.03s; } .reveal-2{ animation-delay:.12s; } .reveal-3{ animation-delay:.2s; }
+.hero-spine{ transform-origin:top; animation:spineGrow .6s cubic-bezier(.2,.7,.3,1) both; }
+@media (prefers-reduced-motion: reduce){ .reveal,.hero-spine{ animation:none !important; } }
 
-.home-stat {
-    border-left: 3px solid var(--green);
-    background: var(--panel-soft);
-    border-radius: 8px;
-    padding: 0.72rem 0.9rem;
-    min-width: 160px;
-}
-
-.home-stat strong {
-    color: var(--ink);
-    display: block;
-    font-size: 1.05rem;
-}
-
-.home-stat span {
-    color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.home-panel {
-    padding: 1rem;
-    height: 100%;
-    box-shadow: none;
-}
-
-.view-row {
-    display: flex;
-    gap: 0.9rem;
-    padding: 0.9rem 0;
-    border-bottom: 1px solid var(--line);
-}
-
-.view-row:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
-}
-
-.view-icon {
-    align-items: center;
-    background: var(--green-soft);
-    border-radius: 8px;
-    color: var(--green);
-    display: flex;
-    flex: 0 0 38px;
-    font-size: 1.1rem;
-    height: 38px;
-    justify-content: center;
-}
-
-.view-icon.blue {
-    background: var(--blue-soft);
-    color: var(--blue);
-}
-
-.view-title {
-    color: var(--ink);
-    font-size: 0.98rem;
-    font-weight: 820;
-    margin: 0 0 0.24rem;
-}
-
-.view-desc {
-    color: var(--muted);
-    font-size: 0.84rem;
-    line-height: 1.5;
-    margin: 0 0 0.45rem;
-}
-
-div[data-testid="stMetric"] {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 0.95rem 1rem;
-    box-shadow: 0 12px 28px rgba(38, 48, 43, 0.055);
-}
-
-div[data-testid="stMetric"] label {
-    color: var(--muted) !important;
-    font-size: 0.74rem !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-div[data-testid="stMetricValue"] {
-    color: var(--ink);
-    font-size: clamp(1.35rem, 2vw, 1.85rem);
-    font-weight: 850;
-}
-
-[data-testid="stFileUploader"] section {
-    background: var(--panel);
-    border: 1.5px dashed #9eb7ad;
-    border-radius: 8px;
-    min-height: 150px;
-}
-
-[data-testid="stFileUploader"] section:hover {
-    border-color: var(--green);
-    background: #f7fbf8;
-}
-
-.stButton > button,
-[data-testid="stBaseButton-secondary"] {
-    border-radius: 8px !important;
-    border: 1px solid var(--line) !important;
-    font-weight: 760 !important;
-}
-
-.stButton > button:hover {
-    border-color: var(--green) !important;
-    color: var(--green) !important;
-}
-
-.stTabs [data-baseweb="tab-list"] {
-    gap: 0.35rem;
-    border-bottom: 1px solid var(--line);
-}
-
-.stTabs [data-baseweb="tab"] {
-    border-radius: 8px 8px 0 0;
-    color: var(--muted);
-    font-weight: 760;
-    padding: 0.55rem 0.9rem;
-}
-
-.stTabs [aria-selected="true"] {
-    background: #ffffff;
-    color: var(--green) !important;
-    border: 1px solid var(--line);
-    border-bottom-color: #ffffff;
-}
-
-hr {
-    margin: 1.15rem 0;
-    border-color: var(--line);
-}
-
-h2, h3 {
-    color: var(--ink);
-    letter-spacing: 0;
-}
-
-h3 {
-    font-size: 1.14rem !important;
-    margin-top: 0.4rem !important;
-}
-
-[data-testid="stDataFrame"] {
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-[data-testid="stAlert"] {
-    border-radius: 8px;
-}
-
-@media (max-width: 760px) {
-    [data-testid="stAppViewContainer"] > .main .block-container {
-        padding: 1rem 0.8rem 2rem;
-    }
-
-    .page-hero,
-    .data-strip {
-        align-items: flex-start;
-        flex-direction: column;
-    }
+@media (max-width: 900px){
+  [data-testid="stAppViewContainer"] > .main .block-container{ padding:1.3rem 1rem 2rem; }
+  .page-hero{ flex-direction:column; }
 }
 </style>
 """,
         unsafe_allow_html=True,
     )
+
+
+def install_chart_theme():
+    """Register a KSE Altair theme so charts are transparent and on-brand."""
+    cfg = {
+        "background": "transparent",
+        "view": {"stroke": "transparent", "fill": "transparent", "continuousHeight": 280},
+        "font": "Inter, ui-sans-serif, system-ui, sans-serif",
+        "axis": {
+            "labelColor": "#566481", "titleColor": "#1B2C49",
+            "gridColor": "#E4E9F2", "domainColor": "#D7DFEC", "tickColor": "#D7DFEC",
+            "labelFont": "JetBrains Mono, ui-monospace, monospace", "labelFontSize": 11,
+            "titleFont": "Inter, sans-serif", "titleFontWeight": 600, "titleFontSize": 12,
+        },
+        "legend": {
+            "labelColor": "#1B2C49", "titleColor": "#566481",
+            "labelFont": "Inter, sans-serif", "titleFont": "JetBrains Mono, monospace",
+            "titleFontSize": 10, "labelFontSize": 11,
+        },
+        "title": {
+            "color": "#0C1B33", "font": "Space Grotesk, sans-serif",
+            "fontWeight": 600, "fontSize": 15, "anchor": "start",
+        },
+        "range": {"category": ["#2D6BD2", "#0F3D7C", "#E0A52A", "#3FA66A", "#7A5BD0", "#C7506B", "#1C8C9B", "#B07A1E"]},
+        "bar": {"color": "#2D6BD2"},
+        "line": {"color": "#2D6BD2", "strokeWidth": 2},
+        "point": {"color": "#2D6BD2"},
+        "area": {"color": "#2D6BD2", "opacity": 0.18},
+    }
+    try:
+        @alt.theme.register("kse", enable=True)
+        def _kse_theme():
+            return {"config": cfg}
+    except Exception:
+        try:
+            alt.themes.register("kse", lambda: {"config": cfg})
+            alt.themes.enable("kse")
+        except Exception:
+            pass
 
 
 def render_page_header(kicker, title, copy, pills=None):
@@ -375,10 +230,13 @@ def render_page_header(kicker, title, copy, pills=None):
     st.markdown(
         f"""
 <section class="page-hero">
-  <div>
-    <p class="page-kicker">{escape(kicker)}</p>
-    <h1 class="page-title">{escape(title)}</h1>
-    <p class="page-copy">{escape(copy)}</p>
+  <div class="page-hero-left">
+    <div class="page-spine"></div>
+    <div>
+      <p class="page-kicker">{escape(kicker)}</p>
+      <h1 class="page-title">{escape(title)}</h1>
+      <p class="page-copy">{escape(copy)}</p>
+    </div>
   </div>
   <div class="hero-pills">{pill_html}</div>
 </section>
@@ -394,7 +252,7 @@ def render_data_strip(df, file_name):
         f"""
 <div class="data-strip">
   <span class="data-pill">File <strong>{escape(file_name)}</strong></span>
-  <span class="data-pill">Period <strong>{date_min} to {date_max}</strong></span>
+  <span class="data-pill">Period <strong>{date_min} → {date_max}</strong></span>
   <span class="data-pill">Revenue <strong>{fmt(df["amount"].sum())}</strong></span>
   <span class="data-pill">Donors <strong>{df["donor_key"].nunique():,}</strong></span>
   <span class="data-pill">Transactions <strong>{len(df):,}</strong></span>
@@ -405,6 +263,7 @@ def render_data_strip(df, file_name):
 
 
 install_theme()
+install_chart_theme()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -561,9 +420,12 @@ with st.sidebar:
     st.markdown(
         """
 <div class="brand-block">
-  <p class="brand-kicker">KSE Foundation</p>
-  <p class="brand-title">Donation Analytics</p>
-  <p class="brand-subtitle">Fundraising performance, donor behavior, and recurring revenue health.</p>
+  <div class="brand-rule"></div>
+  <div>
+    <p class="brand-kicker">KSE&nbsp;Foundation</p>
+    <p class="brand-title">Donation<br>Analytics</p>
+    <p class="brand-subtitle">Fundraising performance, donor behavior, and recurring revenue health.</p>
+  </div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -593,74 +455,100 @@ with st.sidebar:
 # ══════════════════════════════════════════════════════════════════
 
 if "file_data" not in st.session_state:
-    st.markdown("""
-<section class="home-hero">
-  <p class="home-kicker">KSE Foundation analytics workspace</p>
-  <h1 class="home-title">Donation intelligence without the spreadsheet fog.</h1>
-  <p class="home-copy">
-    Upload a Zoho CRM export and move straight into monthly fundraising performance,
-    donor acquisition, recurring revenue, cohort retention, channels, designations,
-    and top donor analysis.
-  </p>
-  <div class="home-stats">
-    <div class="home-stat"><strong>CSV or XLSX</strong><span>Zoho CRM exports</span></div>
-    <div class="home-stat"><strong>Two views</strong><span>General and recurring</span></div>
-    <div class="home-stat"><strong>Private session</strong><span>Stored only while open</span></div>
-  </div>
-</section>
-""", unsafe_allow_html=True)
+    # --- top eyebrow + session chip ---
+    st.markdown(
+        """
+<div class="home-top">
+  <p class="home-kicker">KSE Foundation<span class="kick-slash">/</span>Donation Analytics</p>
+  <span class="session-chip"><span class="dot"></span>Session-only · nothing stored</span>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
 
-    upload_col, preview_col = st.columns([1.05, 1], gap="large")
-    with upload_col:
+    hero_col, up_col = st.columns([1.25, 0.92], gap="large")
+    with hero_col:
         st.markdown(
             """
-<div class="home-panel">
-  <p class="section-kicker">Start here</p>
-  <p class="view-title">Upload export</p>
-  <p class="view-desc">Use the current Zoho CRM donation export. Required columns are donation amount and donation date.</p>
+<section class="home-hero reveal reveal-1">
+  <div class="hero-spine"></div>
+  <div>
+    <h1 class="home-title">Turn a Zoho export into <span class="em">fundraising answers.</span></h1>
+    <p class="home-copy">Drop in your latest donation export and move straight into revenue trends, donor acquisition, recurring health, cohorts, and your strongest supporters — without touching a spreadsheet.</p>
+    <div class="home-stats">
+      <div class="home-stat"><strong>CSV / XLSX</strong><span>Direct from Zoho CRM</span></div>
+      <div class="home-stat"><strong>Two modes</strong><span>General &amp; recurring</span></div>
+      <div class="home-stat"><strong>In-session</strong><span>Cleared when you leave</span></div>
+    </div>
+  </div>
+</section>
+""",
+            unsafe_allow_html=True,
+        )
+    with up_col:
+        st.markdown(
+            """
+<div class="reveal reveal-2">
+  <div class="upload-accent"></div>
+  <p class="upload-title">Upload your CRM export</p>
+  <p class="upload-sub">Use your current Zoho donation export. The only required columns are donation amount and donation date.</p>
 </div>
 """,
             unsafe_allow_html=True,
         )
         _home_upload = st.file_uploader(
-            "Drop your CSV or XLSX export here",
+            "Upload your CRM export",
             type=["csv", "xlsx"],
             key="home_uploader",
-            label_visibility="visible",
+            label_visibility="collapsed",
+        )
+        st.markdown(
+            """
+<p class="upload-hint"><b>Needs:</b> Donation amount in USD · Date of donation</p>
+""",
+            unsafe_allow_html=True,
         )
 
-    with preview_col:
-        st.markdown("""
-<div class="home-panel">
-  <p class="section-kicker">Available analytics</p>
-  <div class="view-row">
-    <div class="view-icon blue">📈</div>
-    <div>
-      <p class="view-title">General performance</p>
-      <p class="view-desc">Revenue, transactions, donor acquisition, channel mix, designations, gift size, and all-time top donations.</p>
-      <div class="view-tags">
-        <span class="view-tag">Revenue</span>
-        <span class="view-tag">Donors</span>
-        <span class="view-tag">Channels</span>
-        <span class="view-tag">Top donations</span>
-      </div>
-    </div>
-  </div>
-  <div class="view-row">
-    <div class="view-icon">🔁</div>
-    <div>
-      <p class="view-title">Recurring program</p>
-      <p class="view-desc">MRR, subscriber growth, retention and churn, cohorts, LTV, recurring gift size, and top donors by cohort.</p>
-      <div class="view-tags">
-        <span class="view-tag">MRR</span>
-        <span class="view-tag">Retention</span>
-        <span class="view-tag">Cohorts</span>
-        <span class="view-tag">LTV</span>
-      </div>
-    </div>
-  </div>
+    # --- divider ---
+    st.markdown(
+        """
+<div class="sec-head reveal reveal-3">
+  <span class="lbl">What you get once it's loaded</span>
+  <span class="ln"></span>
 </div>
-""", unsafe_allow_html=True)
+""",
+        unsafe_allow_html=True,
+    )
+
+    cap1, cap2 = st.columns(2, gap="medium")
+    with cap1:
+        st.markdown(
+            """
+<div class="cap">
+  <div class="cap-top">
+    <div class="cap-ico">📈</div>
+    <p class="cap-name">General performance</p>
+  </div>
+  <p class="cap-desc">Revenue and transaction trends, donor acquisition, channel mix, designations, gift-size distribution, and all-time top donations.</p>
+  <div class="cap-tags"><span class="cap-tag">Revenue</span><span class="cap-tag">Donors</span><span class="cap-tag">Channels</span><span class="cap-tag">Top gifts</span></div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
+    with cap2:
+        st.markdown(
+            """
+<div class="cap">
+  <div class="cap-top">
+    <div class="cap-ico alt">🔁</div>
+    <p class="cap-name">Recurring program</p>
+  </div>
+  <p class="cap-desc">Monthly recurring revenue, subscriber growth, retention and churn, cohort curves, lifetime value, and top donors by cohort.</p>
+  <div class="cap-tags"><span class="cap-tag">MRR</span><span class="cap-tag">Retention</span><span class="cap-tag">Cohorts</span><span class="cap-tag">LTV</span></div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
 
     # Persist bytes and rerun cleanly so the analytics page renders on its
     # own — not stacked beneath the still-visible home page HTML.
