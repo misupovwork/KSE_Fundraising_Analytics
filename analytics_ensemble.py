@@ -66,9 +66,9 @@ a{ color:var(--brand); }
 
 .home-hero{ display:flex; gap:1.4rem; }
 .hero-spine{ flex:0 0 4px; width:4px; border-radius:3px; background:linear-gradient(var(--navy), var(--brand) 62%, var(--gold)); align-self:stretch; }
-.home-title{ font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,3.4vw,3.05rem); line-height:1.04; letter-spacing:-0.03em; color:var(--navy); margin:0; max-width:16ch; }
+.home-title{ font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,3.4vw,3.05rem); line-height:1.04; letter-spacing:-0.03em; color:var(--navy); margin:0; max-width:30ch; }
 .home-title .em{ color:var(--brand); }
-.home-copy{ font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:48ch; margin:1.15rem 0 0; }
+.home-copy{ font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:64ch; margin:1.15rem 0 0; }
 .home-stats{ display:flex; gap:0; margin-top:1.85rem; flex-wrap:wrap; }
 .home-stat{ padding:0 1.15rem; }
 .home-stat:first-child{ padding-left:0; }
@@ -132,8 +132,8 @@ a{ color:var(--brand); }
 /* KPI metric cards */
 div[data-testid="stMetric"]{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:0.95rem 1rem 1rem; box-shadow:var(--card-sh); container-type:inline-size; transition:.15s; }
 div[data-testid="stMetric"]:hover{ border-color:var(--brand-line); }
-div[data-testid="stMetric"] label{ color:var(--muted) !important; }
-div[data-testid="stMetric"] label p{ font-family:var(--mono); font-size:0.64rem !important; font-weight:600 !important; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted) !important; }
+div[data-testid="stMetric"] label, div[data-testid="stMetric"] [data-testid="stMetricLabel"]{ color:var(--muted) !important; overflow:visible !important; max-width:none !important; }
+div[data-testid="stMetric"] label p{ font-family:var(--mono); font-size:0.8rem !important; font-weight:600 !important; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted) !important; white-space:normal !important; overflow:visible !important; }
 div[data-testid="stMetricValue"]{ font-family:var(--display); color:var(--navy); font-size:clamp(1.05rem,13.5cqi,2rem); font-weight:700; letter-spacing:-0.03em; line-height:1.05; margin-top:0.45rem; white-space:nowrap; font-variant-numeric:tabular-nums; }
 div[data-testid="stMetricValue"], div[data-testid="stMetricValue"] *{ overflow:visible !important; text-overflow:clip !important; max-width:none !important; font-weight:700; }
 div[data-testid="stMetricDelta"]{ font-family:var(--mono); font-size:0.72rem; background:transparent !important; padding:0.35rem 0 0 !important; font-variant-numeric:tabular-nums; }
@@ -227,8 +227,9 @@ INK       = "#141A24"
 MUTED     = "#6B7488"
 GRID      = "#EEF2F8"
 AXIS      = "#E5EAF3"
-# Categorical ramp — older→lighter, newer→deeper (encodes recency); gold + grey tail
-CAT = ["#9DBDEE", "#5B8BE0", "#3E6FCB", "#1B4DB1", "#16409A", "#0F2A52", "#C0892B", "#9AA6BC"]
+# Categorical palette — distinct hues so many categories / years side by side read
+# apart at a glance, anchored on the institutional blue + gold so it stays on-brand.
+CAT = ["#1B4DB1", "#C0892B", "#2C8C7C", "#B5495B", "#6E59A5", "#5B8BE0", "#4C9A4E", "#0F2A52", "#C2702F", "#8A8F9C"]
 
 
 def install_chart_theme():
@@ -518,7 +519,7 @@ if "file_data" not in st.session_state:
         unsafe_allow_html=True,
     )
 
-    hero_col, up_col = st.columns([1.25, 0.92], gap="large")
+    hero_col, up_col = st.columns([1.5, 0.95], gap="large")
     with hero_col:
         st.markdown(
             """
@@ -1134,7 +1135,7 @@ elif page == "Recurring Analysis":
     all_m_str   = [str(m) for m in all_months]
     render_page_header(
         "Recurring analysis",
-        "Recurring donor health",
+        "Recurring donations",
         "MRR growth, active subscribers, retention, churn, cohort behavior, lifetime value, and recurring gift composition.",
         [
             f"{df['donor_key'].nunique():,} recurring donors",
