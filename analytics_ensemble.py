@@ -544,7 +544,7 @@ if "file_data" not in st.session_state:
 <div class="reveal reveal-2">
   <div class="upload-accent"></div>
   <p class="upload-title">Upload an export</p>
-  <p class="upload-sub">Use your current Zoho donation export. Only two columns are required — donation amount and donation date.</p>
+  <p class="upload-sub">Use your current Zoho donation export.</p>
 </div>
 """,
             unsafe_allow_html=True,
