@@ -11,5 +11,5 @@ jobs:
     steps:
       - name: Ping the app
         run: |
-          curl -sSL -o /dev/null -w "HTTP %{http_code}\n" \
+          curl -sS --max-time 30 -o /dev/null -w "HTTP %{http_code}\n" \
             "https://fundraising-analytics218281y321fs1.streamlit.app/"
