@@ -17,20 +17,20 @@ def install_theme():
     st.markdown(
         """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
 :root{
-  --navy:#0F2A52; --ink:#141A24; --ink-2:#46506A;
-  --canvas:#F6F8FC; --paper:#FFFFFF; --paper-2:#F2F5FB;
-  --brand:#1B4DB1; --brand-strong:#16409A; --brand-wash:#EAF0FB; --brand-line:#D4E0F4;
-  --gold:#C0892B; --gold-wash:#F7EFDD;
-  --line:#E5EAF3; --muted:#6B7488;
+  --navy:#0F2A52; --ink:#3B4453; --ink-2:#4E5764;
+  --canvas:#F4F1EA; --paper:#FFFFFF; --paper-2:#F4F1EA;
+  --brand:#1B4DB1; --brand-strong:#16409A; --brand-wash:#EAF0FB; --brand-line:#C9D6EE;
+  --gold:#E39B2E; --gold-strong:#B9781C; --gold-wash:#F7EEDC;
+  --line:#E8E3D6; --muted:#8B9098;
   --good:#1E9E6A; --neg:#D5524E;
-  --card-sh:0 1px 2px rgba(15,42,82,0.05), 0 1px 3px rgba(15,42,82,0.04);
+  --card-sh:0 1px 3px rgba(15,42,82,0.05);
   --card-sh-lg:0 16px 36px -20px rgba(15,42,82,0.32);
-  --display:"Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --body:"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display:"Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --body:"Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ---- base ---- */
@@ -54,10 +54,15 @@ a{ color:var(--brand); }
 
 .side-label{ font-family:var(--mono); font-size:0.62rem !important; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted) !important; margin:0.2rem 0 0.55rem !important; }
 
+.sidebar-hint{ display:flex; align-items:center; gap:9px; font-family:var(--mono); font-size:0.66rem; line-height:1.5; color:var(--muted); }
+.sidebar-hint .dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); flex:none; box-shadow:0 0 0 3px rgba(227,155,46,0.16); }
+
 /* ---- labels ---- */
 .home-kicker,.page-kicker,.section-kicker{ font-family:var(--mono); font-size:0.64rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--brand); margin:0 0 0.5rem; }
 .section-kicker{ color:var(--muted); }
 .kick-slash{ color:var(--gold); margin:0 0.5em; font-weight:600; }
+.hk-org{ color:var(--navy); }
+.hk-page{ color:var(--muted); }
 
 /* ================= HOME ================= */
 .home-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:2.1rem; }
@@ -73,13 +78,14 @@ a{ color:var(--brand); }
 .home-stat{ padding:0 1.15rem; }
 .home-stat:first-child{ padding-left:0; }
 .home-stat + .home-stat{ border-left:1px solid var(--line); }
-.home-stat strong{ display:block; font-family:var(--display); font-size:0.92rem; font-weight:600; color:var(--ink); letter-spacing:-0.01em; }
+.home-stat strong{ display:block; font-family:var(--display); font-size:0.92rem; font-weight:700; color:var(--navy); letter-spacing:-0.01em; }
 .home-stat span{ font-size:0.76rem; color:var(--muted); line-height:1.4; }
 
 /* upload module header */
 .upload-accent{ width:30px; height:3px; border-radius:2px; background:var(--gold); margin:0.15rem 0 0.75rem; }
 .upload-title{ font-family:var(--display); font-size:1.18rem; font-weight:600; color:var(--navy); margin:0 0 0.3rem; letter-spacing:-0.015em; }
 .upload-sub{ font-size:0.87rem; color:var(--muted); line-height:1.55; margin:0 0 0.2rem; }
+.upload-sub b{ color:var(--ink); font-weight:600; }
 .upload-hint{ font-family:var(--mono); font-size:0.68rem; letter-spacing:0.01em; color:var(--muted); margin:0.9rem 0 0; }
 .upload-hint b{ color:var(--ink-2); font-weight:600; }
 
@@ -93,7 +99,7 @@ a{ color:var(--brand); }
   border-color:var(--brand); background:var(--brand-wash);
 }
 [data-testid="stFileUploader"] small, [data-testid="stFileUploader"] span{ color:var(--muted); }
-[data-testid="stFileUploaderDropzoneInstructions"] span{ color:var(--ink) !important; font-weight:600; }
+[data-testid="stFileUploaderDropzoneInstructions"] span{ color:var(--navy) !important; font-weight:600; }
 [data-testid="stFileUploader"] svg{ color:var(--brand); fill:var(--brand); }
 [data-testid="stFileUploader"] button{ background:var(--brand) !important; color:#fff !important; border:1px solid var(--brand) !important; border-radius:10px !important; font-weight:600 !important; box-shadow:none !important; }
 [data-testid="stFileUploader"] button:hover{ border-color:var(--brand-strong) !important; background:var(--brand-strong) !important; color:#fff !important; }
@@ -104,16 +110,16 @@ a{ color:var(--brand); }
 .sec-head .ln{ height:1px; background:var(--line); flex:1; }
 
 /* capability cards */
-.cap{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:1.5rem 1.5rem; height:100%; transition:.18s; box-shadow:var(--card-sh); }
+.cap{ background:var(--paper); border:1px solid var(--line); border-radius:18px; padding:1.5rem 1.5rem; height:100%; transition:.18s; box-shadow:var(--card-sh); }
 .cap:hover{ transform:translateY(-2px); border-color:var(--brand-line); box-shadow:var(--card-sh-lg); }
 .cap-top{ display:flex; align-items:center; gap:0.85rem; margin-bottom:0.8rem; }
 .cap-ico{ flex:0 0 42px; height:42px; border-radius:11px; background:var(--brand-wash); color:var(--brand); display:flex; align-items:center; justify-content:center; }
 .cap-ico svg{ width:20px; height:20px; }
-.cap-ico.alt{ background:var(--gold-wash); color:var(--gold); }
+.cap-ico.alt{ background:var(--gold-wash); color:var(--gold-strong); }
 .cap-name{ font-family:var(--display); font-size:1.05rem; font-weight:600; color:var(--navy); margin:0; letter-spacing:-0.01em; }
 .cap-desc{ font-size:0.88rem; line-height:1.58; color:var(--ink-2); margin:0 0 1rem; }
 .cap-tags{ display:flex; flex-wrap:wrap; gap:0.4rem; }
-.cap-tag{ font-family:var(--mono); font-size:0.66rem; letter-spacing:0.01em; color:var(--muted); background:var(--paper-2); border:1px solid var(--line); border-radius:7px; padding:0.26rem 0.6rem; }
+.cap-tag{ font-family:var(--mono); font-size:0.66rem; letter-spacing:0.01em; color:var(--muted); background:var(--paper-2); border:1px solid var(--line); border-radius:8px; padding:0.26rem 0.6rem; }
 
 /* ============ ANALYTICS SHELL ============ */
 .page-hero{ display:flex; gap:1.2rem; align-items:flex-start; justify-content:space-between; margin:0 0 1.4rem; }
@@ -179,7 +185,7 @@ h4,h5{ font-weight:600 !important; }
 [data-testid="stDataFrame"], [data-testid="stTable"]{ border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--card-sh); }
 
 /* generic bordered container -> soft card */
-div[data-testid="stVerticalBlockBorderWrapper"]{ background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:var(--card-sh); }
+div[data-testid="stVerticalBlockBorderWrapper"]{ background:var(--paper); border:1px solid var(--line); border-radius:18px; box-shadow:var(--card-sh); }
 
 /* alerts */
 [data-testid="stAlert"]{ border-radius:12px; border:1px solid var(--line); font-size:0.88rem; }
@@ -220,16 +226,17 @@ NAVY      = "#0F2A52"
 BRAND     = "#1B4DB1"
 BLUE_MID  = "#5B8BE0"
 BLUE_SOFT = "#9DBDEE"
-GOLD      = "#C0892B"
+GOLD      = "#B9781C"
 GOOD      = "#1E9E6A"
 NEG       = "#D5524E"
-INK       = "#141A24"
-MUTED     = "#6B7488"
-GRID      = "#EEF2F8"
-AXIS      = "#E5EAF3"
+INK       = "#3B4453"
+INK_2     = "#4E5764"
+MUTED     = "#8B9098"
+GRID      = "#F1EDE3"
+AXIS      = "#E8E3D6"
 # Categorical palette — distinct hues so many categories / years side by side read
 # apart at a glance, anchored on the institutional blue + gold so it stays on-brand.
-CAT = ["#1B4DB1", "#C0892B", "#2C8C7C", "#B5495B", "#6E59A5", "#5B8BE0", "#4C9A4E", "#0F2A52", "#C2702F", "#8A8F9C"]
+CAT = ["#1B4DB1", "#B9781C", "#2C8C7C", "#B5495B", "#6E59A5", "#5B8BE0", "#4C9A4E", "#0F2A52", "#C2702F", "#8A8F9C"]
 
 
 def install_chart_theme():
@@ -237,20 +244,20 @@ def install_chart_theme():
     cfg = {
         "background": "transparent",
         "view": {"stroke": "transparent", "fill": "transparent", "continuousHeight": 290},
-        "font": "Inter, ui-sans-serif, system-ui, sans-serif",
+        "font": "Hanken Grotesk, ui-sans-serif, system-ui, sans-serif",
         "axis": {
             "labelColor": MUTED, "titleColor": MUTED,
             "gridColor": GRID, "domainColor": AXIS, "tickColor": AXIS,
-            "labelFont": "IBM Plex Mono, ui-monospace, monospace", "labelFontSize": 10,
-            "titleFont": "IBM Plex Mono, ui-monospace, monospace", "titleFontWeight": 600, "titleFontSize": 10.5,
+            "labelFont": "JetBrains Mono, ui-monospace, monospace", "labelFontSize": 10,
+            "titleFont": "JetBrains Mono, ui-monospace, monospace", "titleFontWeight": 600, "titleFontSize": 10.5,
         },
         "legend": {
-            "labelColor": "#46506A", "titleColor": MUTED,
-            "labelFont": "Inter, sans-serif", "titleFont": "IBM Plex Mono, monospace",
+            "labelColor": INK_2, "titleColor": MUTED,
+            "labelFont": "Hanken Grotesk, sans-serif", "titleFont": "JetBrains Mono, monospace",
             "titleFontSize": 9.5, "labelFontSize": 11, "symbolType": "circle", "symbolSize": 70,
         },
         "title": {
-            "color": NAVY, "font": "Space Grotesk, sans-serif",
+            "color": NAVY, "font": "Bricolage Grotesque, sans-serif",
             "fontWeight": 600, "fontSize": 13.5, "anchor": "start", "dy": -4,
         },
         "range": {
@@ -500,7 +507,10 @@ with st.sidebar:
             st.session_state.pop("file_name", None)
             st.rerun()
     else:
-        st.caption("Upload a Zoho CRM export to begin.")
+        st.markdown(
+            '<div class="sidebar-hint"><span class="dot"></span>Upload a Zoho CRM export to begin.</div>',
+            unsafe_allow_html=True,
+        )
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -512,7 +522,7 @@ if "file_data" not in st.session_state:
     st.markdown(
         """
 <div class="home-top">
-  <p class="home-kicker">KSE Foundation<span class="kick-slash">/</span>Donation Analytics</p>
+  <p class="home-kicker"><span class="hk-org">KSE Foundation</span><span class="kick-slash">/</span><span class="hk-page">Donation Analytics</span></p>
   <span class="session-chip"><span class="dot"></span>Session only · nothing is stored</span>
 </div>
 """,
@@ -527,7 +537,7 @@ if "file_data" not in st.session_state:
   <div class="hero-spine"></div>
   <div>
     <h1 class="home-title">Your fundraising numbers, <span class="em">ready in one upload.</span></h1>
-    <p class="home-copy">Drop in your latest Zoho donation export and go straight to revenue trends, donor acquisition, recurring health, cohorts, and your largest gifts — no spreadsheet wrangling.</p>
+    <p class="home-copy">Every view reports on a single, fully completed month. If the current month is still in progress, the dashboard automatically analyzes the last finished month instead — so your numbers always reflect a complete period, never a partial one.</p>
     <div class="home-stats">
       <div class="home-stat"><strong>CSV or XLSX</strong><span>Straight from Zoho CRM</span></div>
       <div class="home-stat"><strong>Two workspaces</strong><span>General &amp; recurring</span></div>
@@ -539,28 +549,29 @@ if "file_data" not in st.session_state:
             unsafe_allow_html=True,
         )
     with up_col:
-        st.markdown(
-            """
+        with st.container(border=True):
+            st.markdown(
+                """
 <div class="reveal reveal-2">
   <div class="upload-accent"></div>
   <p class="upload-title">Upload an export</p>
-  <p class="upload-sub">Use your current Zoho donation export.</p>
+  <p class="upload-sub">Upload the <b>All Donations 2023–2026</b> report from Zoho CRM → Reports. Before exporting, edit the report's date range so it captures the latest donations.</p>
 </div>
 """,
-            unsafe_allow_html=True,
-        )
-        _home_upload = st.file_uploader(
-            "Upload your CRM export",
-            type=["csv", "xlsx"],
-            key="home_uploader",
-            label_visibility="collapsed",
-        )
-        st.markdown(
-            """
+                unsafe_allow_html=True,
+            )
+            _home_upload = st.file_uploader(
+                "Upload your CRM export",
+                type=["csv", "xlsx"],
+                key="home_uploader",
+                label_visibility="collapsed",
+            )
+            st.markdown(
+                """
 <p class="upload-hint"><b>Required:</b> Donation amount in USD · Date of donation</p>
 """,
-            unsafe_allow_html=True,
-        )
+                unsafe_allow_html=True,
+            )
 
     # --- divider ---
     st.markdown(
