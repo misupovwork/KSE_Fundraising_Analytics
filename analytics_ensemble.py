@@ -1,6 +1,3 @@
-# To run:
-#   python -m streamlit run main.py
-
 import streamlit as st
 import pandas as pd
 import re
@@ -10,6 +7,26 @@ from datetime import date
 from html import escape
 
 st.set_page_config(page_title="KSE Donation Analytics", page_icon="📊", layout="wide")
+
+
+# ── Keep chart labels inside their card ──────────────────────────────
+# Vega does not reserve horizontal room for value-label text marks or wide
+# axis ticks, so the rightmost "$1,234,567" label used to paint past the
+# card border. Wrapping altair_chart once applies padding + fit-x autosize
+# to every chart in the app, so content is contained instead of overflowing.
+_ORIG_ALTAIR_CHART = st.altair_chart
+
+def _padded_altair_chart(chart, *args, **kwargs):
+    try:
+        chart = chart.properties(
+            padding={"left": 6, "right": 40, "top": 16, "bottom": 6},
+            autosize={"type": "fit-x", "contains": "padding"},
+        )
+    except Exception:
+        pass
+    return _ORIG_ALTAIR_CHART(chart, *args, **kwargs)
+
+st.altair_chart = _padded_altair_chart
 
 
 def install_theme():
@@ -324,16 +341,69 @@ install_chart_theme()
 # ══════════════════════════════════════════════════════════════════
 
 def clean_money(val) -> float:
-    if pd.isna(val): return 0.0
-    if isinstance(val, (int, float)): return float(val)
-    s = re.sub(r"[^0-9\.,\-]", "", str(val).replace("\u00a0", "").replace(" ", ""))
-    if s in {"", "-", ".", ","}: return 0.0
-    if "," in s and "." in s:
-        s = s.replace(".", "").replace(",", ".") if s.rfind(",") > s.rfind(".") else s.replace(",", "")
-    elif "," in s:
-        s = s.replace(",", "") if all(len(p) == 3 for p in s.split(",")[1:]) else s.replace(",", ".")
-    try: return float(s)
-    except: return 0.0
+    """Parse a money value robustly.
+
+    Handles: plain numbers, currency symbols/codes, thin/nbsp spaces,
+    accounting-style negatives ``(1,234)``, scientific notation from Excel
+    (``1e7``), and both US (``1,234.56``) and European (``1.234,56``)
+    separator conventions. Previously large or oddly-formatted wire amounts
+    could silently become 0.0 or a tiny number; this version keeps them.
+    """
+    if pd.isna(val):
+        return 0.0
+    if isinstance(val, (int, float)):
+        return float(val)
+
+    s = str(val).strip()
+    if not s:
+        return 0.0
+
+    # accounting-style negative: (1,234.00) -> -1234.00
+    neg = s.startswith("(") and s.endswith(")")
+    if neg:
+        s = s[1:-1]
+
+    # normalise unicode spaces, then keep only number-relevant characters
+    s = s.replace("\u00a0", "").replace("\u202f", "").replace(" ", "")
+    s = re.sub(r"[^0-9eE\.,\-+]", "", s)
+    if s in {"", "-", "+", ".", ","}:
+        return 0.0
+
+    # scientific notation (e.g. Excel exporting 10,000,000 as 1e7)
+    if re.fullmatch(r"[-+]?\d*\.?\d+[eE][-+]?\d+", s):
+        try:
+            v = float(s)
+            return -v if neg else v
+        except ValueError:
+            return 0.0
+
+    s = s.lstrip("+")
+    has_comma, has_dot = "," in s, "." in s
+    if has_comma and has_dot:
+        # the separator that appears last is the decimal separator
+        if s.rfind(",") > s.rfind("."):
+            s = s.replace(".", "").replace(",", ".")   # European: 1.234.567,89
+        else:
+            s = s.replace(",", "")                       # US: 1,234,567.89
+    elif has_comma:
+        parts = s.split(",")
+        # a single comma with 1-2 trailing digits is a decimal comma; else thousands
+        if len(parts) == 2 and len(parts[1]) in (1, 2):
+            s = s.replace(",", ".")
+        else:
+            s = s.replace(",", "")
+    elif has_dot:
+        parts = s.split(".")
+        # more than one dot => dots are thousands separators (1.234.567)
+        if len(parts) > 2:
+            s = s.replace(".", "")
+        # a single dot is treated as a decimal point (USD data), left as-is
+
+    try:
+        v = float(s)
+        return -v if neg else v
+    except ValueError:
+        return 0.0
 
 def normalize_text(v) -> str:
     return "" if pd.isna(v) else str(v).strip()
@@ -351,12 +421,28 @@ def extract_name_from_donation_name(s) -> str:
         return m.group(1).strip()
     return str(s).strip()
 
+def canon_name(s) -> str:
+    """Normalize a person/org name so it matches across columns:
+    lowercase, drop surrounding punctuation/quotes, collapse whitespace."""
+    s = normalize_text(s).lower()
+    if s in {"nan", "none"}:
+        return ""
+    s = re.sub(r"[\"'`.,;:()\[\]]+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
 def donor_key_row(r):
-    if r["email"]:          return f"email:{r['email']}"
-    if r["contact_name"]:   return f"contact:{r['contact_name'].lower()}"
-    if r["entity_name"]:    return f"entity:{r['entity_name'].lower()}"
-    if r["donation_name"]:  return f"donation:{r['donation_name'].lower()}"
-    return "unknown"
+    # Email is the strongest identifier when present.
+    email = normalize_text(r.get("email", "")).lower()
+    if email and email not in {"nan", "none"}:
+        return f"email:{email}"
+    # Otherwise match on the name from ANY name column, so the same party
+    # doesn't split just because it's typed in Contact on some rows and in
+    # Entity or Donation Name on others.
+    name = (canon_name(r.get("contact_name", ""))
+            or canon_name(r.get("entity_name", ""))
+            or canon_name(r.get("donation_name", "")))
+    return f"name:{name}" if name else "unknown"
 
 def donor_display_name(r):
     if r["contact_name"]:  return r["contact_name"]
@@ -440,8 +526,28 @@ def load_and_normalise(uploaded_file):
     df["designation"] = df.get("designation", pd.Series([""] * len(df))).fillna("").astype(str).str.strip().replace("nan","")
 
     df["donor_key"]  = df.apply(donor_key_row, axis=1)
+    # Bridge: if the same name appears both with and without an email on
+    # different rows, unify those rows under the email so one donor doesn't
+    # split. No-op when the file carries no emails.
+    if (df["email"].str.len() > 0).any():
+        df["_canon"] = df.apply(
+            lambda r: canon_name(r["contact_name"]) or canon_name(r["entity_name"]) or canon_name(r["donation_name"]),
+            axis=1,
+        )
+        emailed = df[df["email"].str.len() > 0]
+        name2email = (emailed.groupby("_canon")["email"]
+                             .agg(lambda s: s.str.lower().value_counts().index[0])
+                             .to_dict())
+        mapped = df["_canon"].map(name2email)
+        need = df["donor_key"].str.startswith("name:") & mapped.notna()
+        df.loc[need, "donor_key"] = "email:" + mapped[need].str.lower()
+        df.drop(columns=["_canon"], inplace=True)
     df["donor_name"] = df.apply(donor_display_name, axis=1)
     df["amount"]     = df["amount_raw"].apply(clean_money)
+    # Lifetime totals per donor across the WHOLE upload (not the selected month),
+    # used to flag "major donors" so trends reflect the core donor base.
+    df["donor_total_all"]    = df.groupby("donor_key")["amount"].transform("sum")
+    df["donor_max_gift_all"] = df.groupby("donor_key")["amount"].transform("max")
     df["month_key"]  = df["date"].dt.to_period("M")
     df["year"]       = df["date"].dt.year
     df["month_num"]  = df["date"].dt.month
@@ -659,6 +765,25 @@ if page == "General Analysis":
         sel_label  = st.selectbox("Month to analyse:", labels, index=default_idx)
         plan_target = st.number_input("Revenue target USD (0 = skip)", min_value=0, value=0, step=1000)
 
+        st.markdown('<p class="side-label">Major gifts</p>', unsafe_allow_html=True)
+        exclude_major = st.checkbox(
+            "Exclude major donors", value=True,
+            help="Focus the analytics on your core donor base by removing a few outlier mega-gifts "
+                 "(e.g. multi-million wire transfers), without dropping wire transfers as a whole.",
+        )
+        major_basis = st.radio(
+            "A donor counts as 'major' when their…",
+            ["Total giving", "Single largest gift"],
+            index=0,
+            help="Total giving catches donors who add up to a lot over time; "
+                 "single largest gift catches one-off whale transfers.",
+        )
+        major_threshold = st.number_input(
+            "…exceeds (USD)", min_value=0, value=1_000_000, step=100_000,
+            help="Donors above this line are treated as major gifts and removed from every "
+                 "figure while the toggle above is on.",
+        )
+
         st.markdown('<p class="side-label">Filters</p>', unsafe_allow_html=True)
         if "source" in df_full.columns:
             all_sources = sorted(df_full["source"].fillna("(no source)").unique())
@@ -696,6 +821,9 @@ if page == "General Analysis":
             d["dir_label"] = d["entity_name"].replace("", "(no direction)")
             d = d[d["dir_label"].isin(sel_dirs)]
         d = d[d["designation_label"].isin(sel_desigs)]
+        if exclude_major and major_threshold > 0:
+            basis_col = "donor_total_all" if major_basis == "Total giving" else "donor_max_gift_all"
+            d = d[d[basis_col] <= major_threshold]
         return d
 
     df_cur    = apply_filters(df_full[df_full["month_key"] == sel_period].copy())
@@ -738,6 +866,18 @@ if page == "General Analysis":
         ],
     )
 
+    if exclude_major and major_threshold > 0:
+        _basis_col = "donor_total_all" if major_basis == "Total giving" else "donor_max_gift_all"
+        _maj = df_full[df_full[_basis_col] > major_threshold]
+        _n = _maj["donor_key"].nunique()
+        if _n:
+            _basis_word = "total giving" if major_basis == "Total giving" else "a single gift"
+            st.caption(
+                f"Focused view — excluding {_n} major donor{'s' if _n != 1 else ''} with "
+                f"{_basis_word} above {fmt(major_threshold)}; {fmt(_maj['amount'].sum())} in gifts "
+                f"held out of every figure below. Toggle this off in the sidebar to see the full total."
+            )
+
     t1, t2, t3, t4, t5, t6 = st.tabs([
         "Revenue", "Donors", "Recurring", "Designations", "Channels", "Top Donations"
     ])
@@ -774,7 +914,7 @@ if page == "General Analysis":
             color=alt.condition(alt.datum.is_selected, alt.value(GOLD), alt.value(BLUE_MID)),
             tooltip=["month_str:O", alt.Tooltip("amount:Q", format="$,.0f", title="Revenue")]
         ).properties(height=300, title="Trailing 12 months · selected month in gold")
-        txt = bar.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.0f"))
+        txt = bar.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.2s"))
         st.altair_chart(bar + txt, use_container_width=True)
 
         st.divider()
@@ -888,7 +1028,7 @@ if page == "General Analysis":
             color=alt.condition(alt.datum.is_selected, alt.value(GOLD), alt.value(BLUE_MID)),
             tooltip=["month_str:O", alt.Tooltip("amount:Q", format="$,.0f", title="MRR")]
         ).properties(height=260)
-        txt_mrr = bar_mrr.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.0f"))
+        txt_mrr = bar_mrr.mark_text(dy=-8, fontSize=9).encode(text=alt.Text("amount:Q", format="$,.2s"))
         st.altair_chart(bar_mrr + txt_mrr, use_container_width=True)
 
         st.divider()
