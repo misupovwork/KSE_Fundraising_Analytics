@@ -1,5 +1,4 @@
-# To run:
-#   python -m streamlit run main.py
+# a
 
 import streamlit as st
 import pandas as pd
