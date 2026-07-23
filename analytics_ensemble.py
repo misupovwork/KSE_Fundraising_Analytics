@@ -1,3 +1,6 @@
+# To run:
+#   python -m streamlit run main.py
+
 import streamlit as st
 import pandas as pd
 import re
@@ -544,8 +547,8 @@ def load_and_normalise(uploaded_file):
         df.drop(columns=["_canon"], inplace=True)
     df["donor_name"] = df.apply(donor_display_name, axis=1)
     df["amount"]     = df["amount_raw"].apply(clean_money)
-    # Lifetime totals per donor across the WHOLE upload (not the selected month),
-    # used to flag "major donors" so trends reflect the core donor base.
+    # Donor-level lifetime stats across the WHOLE upload. Informational only —
+    # no filtering is applied to them; every donation is included in the analytics.
     df["donor_total_all"]    = df.groupby("donor_key")["amount"].transform("sum")
     df["donor_max_gift_all"] = df.groupby("donor_key")["amount"].transform("max")
     df["month_key"]  = df["date"].dt.to_period("M")
@@ -765,25 +768,6 @@ if page == "General Analysis":
         sel_label  = st.selectbox("Month to analyse:", labels, index=default_idx)
         plan_target = st.number_input("Revenue target USD (0 = skip)", min_value=0, value=0, step=1000)
 
-        st.markdown('<p class="side-label">Major gifts</p>', unsafe_allow_html=True)
-        exclude_major = st.checkbox(
-            "Exclude major donors", value=True,
-            help="Focus the analytics on your core donor base by removing a few outlier mega-gifts "
-                 "(e.g. multi-million wire transfers), without dropping wire transfers as a whole.",
-        )
-        major_basis = st.radio(
-            "A donor counts as 'major' when their…",
-            ["Total giving", "Single largest gift"],
-            index=0,
-            help="Total giving catches donors who add up to a lot over time; "
-                 "single largest gift catches one-off whale transfers.",
-        )
-        major_threshold = st.number_input(
-            "…exceeds (USD)", min_value=0, value=1_000_000, step=100_000,
-            help="Donors above this line are treated as major gifts and removed from every "
-                 "figure while the toggle above is on.",
-        )
-
         st.markdown('<p class="side-label">Filters</p>', unsafe_allow_html=True)
         if "source" in df_full.columns:
             all_sources = sorted(df_full["source"].fillna("(no source)").unique())
@@ -821,9 +805,6 @@ if page == "General Analysis":
             d["dir_label"] = d["entity_name"].replace("", "(no direction)")
             d = d[d["dir_label"].isin(sel_dirs)]
         d = d[d["designation_label"].isin(sel_desigs)]
-        if exclude_major and major_threshold > 0:
-            basis_col = "donor_total_all" if major_basis == "Total giving" else "donor_max_gift_all"
-            d = d[d[basis_col] <= major_threshold]
         return d
 
     df_cur    = apply_filters(df_full[df_full["month_key"] == sel_period].copy())
@@ -865,18 +846,6 @@ if page == "General Analysis":
             f"{fmt(cur['mrr'])} recurring",
         ],
     )
-
-    if exclude_major and major_threshold > 0:
-        _basis_col = "donor_total_all" if major_basis == "Total giving" else "donor_max_gift_all"
-        _maj = df_full[df_full[_basis_col] > major_threshold]
-        _n = _maj["donor_key"].nunique()
-        if _n:
-            _basis_word = "total giving" if major_basis == "Total giving" else "a single gift"
-            st.caption(
-                f"Focused view — excluding {_n} major donor{'s' if _n != 1 else ''} with "
-                f"{_basis_word} above {fmt(major_threshold)}; {fmt(_maj['amount'].sum())} in gifts "
-                f"held out of every figure below. Toggle this off in the sidebar to see the full total."
-            )
 
     t1, t2, t3, t4, t5, t6 = st.tabs([
         "Revenue", "Donors", "Recurring", "Designations", "Channels", "Top Donations"
