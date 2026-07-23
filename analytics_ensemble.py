@@ -970,6 +970,47 @@ if page == "General Analysis":
         ).properties(height=280)
         st.altair_chart(bar_d, use_container_width=True)
 
+        st.divider()
+        st.subheader(f"Top Donors — {sel_label}")
+        st.caption("Ranked by total given within the selected month. Respects the sidebar filters.")
+
+        if df_cur.empty:
+            st.info("No donations in this month for the current filters.")
+        else:
+            n_top = st.slider("Show top", 5, 25, 10, step=5, key="top_donors_month_n")
+
+            month_donors = df_cur.groupby("donor_key").agg(
+                name     = ("donor_name",   "first"),
+                total    = ("amount",       "sum"),
+                gifts    = ("amount",       "count"),
+                largest  = ("amount",       "max"),
+                is_new   = ("is_new_donor", "any"),
+                recurring= ("is_recurring", "any"),
+            ).nlargest(n_top, "total").reset_index()
+
+            month_rev = df_cur["amount"].sum()
+            month_donors["share"] = (
+                month_donors["total"] / month_rev * 100 if month_rev else 0
+            )
+
+            tbl = pd.DataFrame({
+                "Donor":     month_donors["name"],
+                "Total":     month_donors["total"].apply(fmt),
+                "% of month": month_donors["share"].apply(lambda v: f"{v:.1f}%"),
+                "Gifts":     month_donors["gifts"],
+                "Largest":   month_donors["largest"].apply(fmt),
+                "Type":      month_donors["is_new"].map({True: "New", False: "Returning"}),
+                "Recurring": month_donors["recurring"].map({True: "Yes", False: "No"}),
+            })
+            st.dataframe(tbl, use_container_width=True, hide_index=True)
+
+            shown = month_donors["total"].sum()
+            st.caption(
+                f"These {len(month_donors)} donors gave {fmt(shown)} of "
+                f"{fmt(month_rev)} raised this month "
+                f"({shown / month_rev * 100:.1f}%)." if month_rev else ""
+            )
+
     # ── TAB 3 — RECURRING ────────────────────────────────────────
     with t3:
         st.subheader("Recurring Program")
